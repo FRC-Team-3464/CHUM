@@ -26,7 +26,7 @@ public class SwerveCommand extends Command {
   // private DoubleSupplier dynamicHeadingSup;
 
   /** Creates a new SwerveCommand. */
-  public SwerveCommand(DoubleSupplier ySpeedSup, DoubleSupplier xSpeedSup, DoubleSupplier rotationSup, BooleanSupplier robotCentricSup /* , /*BooleanSupplier dampen, DoubleSupplier dynamicHeadingSup */) {
+  public SwerveCommand(DoubleSupplier ySpeedSup, DoubleSupplier xSpeedSup, DoubleSupplier rotationSup, BooleanSupplier robotCentricSup /*, DoubleSupplier dynamicHeadingSup */) {
     // Use addRequirements() here to declare subsystem dependencies.
     swerveSub = SwerveSubsystem.getInstance();
     addRequirements(swerveSub);
@@ -49,8 +49,8 @@ public class SwerveCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double xSpeed = xSpeedSup.getAsDouble()*0.7;
-    double ySpeed = ySpeedSup.getAsDouble()*0.7;
+    double xSpeed = xSpeedSup.getAsDouble()*0.8;
+    double ySpeed = ySpeedSup.getAsDouble()*0.8;
     double rotation = rotationSup.getAsDouble();
     
     xSpeed = Math.abs(xSpeed) > Constants.SwerveConstants.kDeadband ? xSpeed : 0.0;

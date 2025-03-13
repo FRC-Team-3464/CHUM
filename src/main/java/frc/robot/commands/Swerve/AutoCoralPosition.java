@@ -36,15 +36,21 @@ public class AutoCoralPosition extends Command {
   /** Creates a new AutoCoralPosition. */
   public final int[] coralIDs = {6, 7, 8, 9, 10, 11, 17, 18, 19, 20, 21, 22};
 
+  private double xspeed = 0;
+  private double yspeed = 0;
+  private double rotationSpeed = 0;
+
   private static final TrapezoidProfile.Constraints X_CONSTRAINTS = new TrapezoidProfile.Constraints(3, 2);
   private static final TrapezoidProfile.Constraints Y_CONSTRAINTS = new TrapezoidProfile.Constraints(3, 2);
-  private static final TrapezoidProfile.Constraints THETA_CONSTRAINTS = new TrapezoidProfile.Constraints(8, 8);
+  private static final TrapezoidProfile.Constraints THETA_CONSTRAINTS = new TrapezoidProfile.Constraints(3, 2);
 
-  private final ProfiledPIDController xController = new ProfiledPIDController(1, 0, 0, X_CONSTRAINTS);
-  private final ProfiledPIDController yController = new ProfiledPIDController(1, 0, 0, Y_CONSTRAINTS);
-  private final ProfiledPIDController thetaController = new ProfiledPIDController(2, 0, 0, THETA_CONSTRAINTS);
+  private final ProfiledPIDController xController = new ProfiledPIDController(2, 0, 0, X_CONSTRAINTS);
+  private final ProfiledPIDController yController = new ProfiledPIDController(.5, 0, 0, Y_CONSTRAINTS);
+  private final ProfiledPIDController thetaController = new ProfiledPIDController(.5, 0, 0, THETA_CONSTRAINTS);
  
   private Transform2d TAG_TO_GOAL = new Transform2d();
+
+  private boolean right;
 
   public final VisionSubsystem visionSub = VisionSubsystem.getInstance();
   public final SwerveSubsystem swerveSub = SwerveSubsystem.getInstance();
@@ -62,18 +68,17 @@ public class AutoCoralPosition extends Command {
     // Use addRequirements() here to declare subsystem dependencies.
     photonCamera = visionSub.getFrontCamera();
 
+    right = side;
+
     xController.setTolerance(0.2);
     yController.setTolerance(0.2);
-    thetaController.setTolerance(Units.degreesToRadians(3));
+    thetaController.setTolerance(Units.degreesToRadians(0.5));
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
     TAG_TO_GOAL = 
       new Transform2d(
-        new Translation2d(
-          SwerveConstants.distances.get(SwerveConstants.targetPosition), 
-          side ? Units.inchesToMeters(10) : -Units.inchesToMeters(10)
-        ), 
-        new Rotation3d(0, 0,  0).toRotation2d()
+        new Translation2d(1, side ? Units.inchesToMeters(3) : Units.inchesToMeters(-3)), 
+        new Rotation3d(0, 0,  Math.PI).toRotation2d()
       );
 
     addRequirements(swerveSub);
@@ -101,10 +106,13 @@ public class AutoCoralPosition extends Command {
     if (!cameraResults.isEmpty()) {
       var result = cameraResults.get(cameraResults.size() - 1);
       if (result.hasTargets()) {
+        // var targetOpt = result.getTargets().stream()
+        //   .filter(t -> Arrays.asList(coralIDs).contains(t.getFiducialId()))
+        //   .filter(t -> !t.equals(lastTarget) && t.getPoseAmbiguity() >= 0.2 && t.getPoseAmbiguity() != -1)
+        //   .findFirst();
+
         var targetOpt = result.getTargets().stream()
-          .filter(t -> Arrays.asList(coralIDs).contains(t.getFiducialId()))
-          .filter(t -> !t.equals(lastTarget) && t.getPoseAmbiguity() >= 0.2 && t.getPoseAmbiguity() != -1)
-          .findFirst();
+        .filter(t -> t.getPoseAmbiguity() != -1).findFirst();
 
         if (targetOpt.isPresent()) {
           var target = targetOpt.get();
@@ -117,21 +125,41 @@ public class AutoCoralPosition extends Command {
 
           var goalPose = targetPose.transformBy(TAG_TO_GOAL);
 
+          System.out.println(target.getBestCameraToTarget());
+          // System.out.println("goal: " + goalPose);
+          // System.out.println("current pose: " + swerveSub.getPose());
           xController.setGoal(goalPose.getX());
           yController.setGoal(goalPose.getY());
-          thetaController.setGoal(goalPose.getRotation().getRadians());
+          thetaController.setGoal(goalPose.getRotation().getRadians());   
+
+          if (right) {
+            yspeed = target.getBestCameraToTarget().getY() < (Units.inchesToMeters(4.5)) ? 0.3 : 0;
+          }
+          else {
+            yspeed = target.getBestCameraToTarget().getY() > (Units.inchesToMeters(-4)) ? -0.3 : 0;
+          }
+          // if (target.getBestCameraToTarget().getRotation().getAngle() < 0) {
+          //   rotationSpeed = 0.2;
+          // }
+          // if (target.getBestCameraToTarget().getRotation().getAngle() > 0) {
+          //   rotationSpeed = -0.2;
+          // }
+          // else {
+          //   rotationSpeed = 0;
+          // }
+          swerveSub.drive(new Translation2d(0, yspeed), rotationSpeed, false, true);
         }
       }
     }
     if (lastTarget == null) {
-      swerveSub.drive(new Translation2d(0, 0), 0, true, true);
+      swerveSub.drive(new Translation2d(0, 0), 0, false, true);
     }
     else {
       var xSpeed = xController.atGoal() ? 0 : xController.calculate(robotPose.getX());
       var ySpeed = yController.atGoal() ? 0 : yController.calculate(robotPose.getY());
       var thetaSpeed = thetaController.atGoal() ? 0 : thetaController.calculate(robotPose.getRotation().getRadians());
 
-      swerveSub.drive(new Translation2d(xSpeed, ySpeed), thetaSpeed, true, false);
+            // swerveSub.drive(new Translation2d(0, ySpeed), 0, false, false);
     }
     
   }
@@ -141,6 +169,7 @@ public class AutoCoralPosition extends Command {
   @Override
   public void end(boolean interrupted) {
     swerveSub.drive(new Translation2d(0, 0), 0, true, true);
+    System.out.println("goal reached");
   }
 
   // Returns true when the command should end.

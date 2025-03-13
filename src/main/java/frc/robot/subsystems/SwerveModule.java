@@ -103,11 +103,11 @@ public class SwerveModule {
       }
 
     public void setAngle(SwerveModuleState desiredState) {
-        if(Math.abs(desiredState.speedMetersPerSecond) <= (Constants.SwerveConstants.kMaxTeleDriveSpeed * 0.001))
-        {
-         turnMotor.stopMotor();
-         return;
-        }
+        // if(Math.abs(desiredState.speedMetersPerSecond) <= (Constants.SwerveConstants.kMaxTeleDriveSpeed * 0.001))
+        // {
+        //  turnMotor.stopMotor();
+        //  return;
+        // }
         Rotation2d angle = desiredState.angle;
          SparkClosedLoopController controller = turnMotor.getClosedLoopController();
          controller.setReference(angle.getDegrees(), ControlType.kPosition, ClosedLoopSlot.kSlot0);

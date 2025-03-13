@@ -28,14 +28,14 @@ public class VisionSubsystem extends SubsystemBase {
   public static VisionSubsystem instance;
 
   public final PhotonCamera frontAprilCamera;
-  public final PhotonCamera backAprilCamera;
+  // public final PhotonCamera backAprilCamera;
   public final PhotonCamera algaeCamera;
 
   private final PhotonPoseEstimator photonPoseEstimatorFront;
-  private final PhotonPoseEstimator photonPoseEstimatorBack;
+  // private final PhotonPoseEstimator photonPoseEstimatorBack;
 
   private final Transform3d frontCameraTransform = new Transform3d(
-    new Translation3d(Units.inchesToMeters(0), Units.inchesToMeters(0), Units.inchesToMeters(0)),
+    new Translation3d(Units.inchesToMeters(-9), Units.inchesToMeters(2), Units.inchesToMeters(7)),
     new Rotation3d(Units.degreesToRadians(0), Units.degreesToRadians(0), Units.degreesToRadians(0)));
 
   private final Transform3d backCameraTransform = new Transform3d(
@@ -48,14 +48,14 @@ public class VisionSubsystem extends SubsystemBase {
     aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 
     frontAprilCamera = new PhotonCamera("Front April Camera");
-    backAprilCamera = new PhotonCamera("Back April Camera");
+    // backAprilCamera = new PhotonCamera("Back April Camera");
     algaeCamera = new PhotonCamera("Algae Camera");
 
     photonPoseEstimatorFront = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, frontCameraTransform);
-    photonPoseEstimatorBack = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, backCameraTransform);
+    // photonPoseEstimatorBack = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, backCameraTransform);
 
     photonPoseEstimatorFront.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
-    photonPoseEstimatorBack.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+    // photonPoseEstimatorBack.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
 
   }
 
@@ -94,8 +94,8 @@ public class VisionSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    addVisionMeasurement(photonPoseEstimatorFront, frontAprilCamera);
-    addVisionMeasurement(photonPoseEstimatorBack, backAprilCamera);
+    // addVisionMeasurement(photonPoseEstimatorFront, frontAprilCamera);
+    // addVisionMeasurement(photonPoseEstimatorBack, backAprilCamera);
     // This method will be called once per scheduler run
   }
 }

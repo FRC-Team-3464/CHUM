@@ -109,14 +109,14 @@ public final class Constants {
     public static final double closedLoopRamp = 0.0;
 
     /* Angle Motor PID Values */
-    public static final double angleKP = 0.01;
+    public static final double angleKP = 0.011;
     public static final double angleKI = 0;
     public static final double angleKD = 0;
     public static final double angleKF = 0;
 
     /* Drive Motor PID Values */
 
-    public static final double driveKP = 0.03; 
+    public static final double driveKP = 0.035; 
     public static final double driveKI = 0.0;
     public static final double driveKD = 0.0;
 
@@ -230,6 +230,11 @@ public final class Constants {
     public static final POVButton pancakeDown = new POVButton(auxStick, 180);
     public static final POVButton pancakeRight = new POVButton(auxStick, 90);
     public static final POVButton pancakeLeft = new POVButton(auxStick, 270);
+
+    public static final POVButton dPadUp = new POVButton(xbox, 0);
+    public static final POVButton dPadDown = new POVButton(xbox, 180);
+    public static final POVButton dPadRight = new POVButton(xbox, 90);
+    public static final POVButton dPadLeft = new POVButton(xbox, 270);
     
     
     public static final JoystickButton buttonA = new JoystickButton(xbox, 1);

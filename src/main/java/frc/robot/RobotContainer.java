@@ -7,14 +7,13 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Algae.DeployAlgaeIntake;
@@ -28,6 +27,9 @@ import frc.robot.commands.Armevator.RunArm;
 import frc.robot.commands.Armevator.RunElevator;
 import frc.robot.commands.Coral.IntakeCoral;
 import frc.robot.commands.Coral.ReverseCoralIntake;
+import frc.robot.commands.Swerve.AutoCoralPosition;
+import frc.robot.commands.Swerve.AutoPosition;
+import frc.robot.commands.Swerve.DampenSwerve;
 import frc.robot.commands.Swerve.SwerveCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -56,7 +58,7 @@ public class RobotContainer {
         () -> Constants.OperatorConstants.xbox.getRawAxis(XboxController.Axis.kLeftY.value),
         () -> Constants.OperatorConstants.xbox.getRawAxis(XboxController.Axis.kLeftX.value), 
         () -> OperatorConstants.xbox.getRawAxis(XboxController.Axis.kRightX.value), 
-        () -> true)
+        () -> !OperatorConstants.xbox.getYButton())
     );
 
 
@@ -78,30 +80,24 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-      // Constants.OperatorConstants.button7.onTrue(new ElevatorToPosition(0));
-      // Constants.OperatorConstants.button8.onTrue(new ElevatorToPosition(10));
-      // Constants.OperatorConstants.button9.onTrue(new ElevatorToPosition(20));
-      // Constants.OperatorConstants.button10.onTrue(new ElevatorToPosition(30));
-      // Constants.OperatorConstants.button11.onTrue(new ElevatorToPosition(40));
-      Constants.OperatorConstants.pancakeUp.whileTrue(new RunElevator(true));
-      Constants.OperatorConstants.pancakeDown.whileTrue(new RunElevator(false));
+    Constants.OperatorConstants.pancakeUp.whileTrue(new RunElevator(true));
+    Constants.OperatorConstants.pancakeDown.whileTrue(new RunElevator(false));
 
-      
-    // Constants.OperatorConstants.buttonX.whileTrue(new AutoCoralPosition(true));
-    // Constants.OperatorConstants.buttonB.whileTrue(new AutoCoralPosition(false));
-    Constants.OperatorConstants.buttonY.onTrue(new InstantCommand(() -> swerveSub.resetGyro()));
+    Constants.OperatorConstants.buttonRB.whileTrue(new AutoCoralPosition(true));
+    Constants.OperatorConstants.buttonLB.whileTrue(new AutoCoralPosition(false));
+    Constants.OperatorConstants.buttonX.onTrue(new InstantCommand(() -> swerveSub.resetGyro()));
 
-    // Constants.OperatorConstants.button2.onTrue(new PivotToPositionCommand(0));
-    // Constants.OperatorConstants.button3.onTrue(new PivotToPositionCommand(30));
-    // Constants.OperatorConstants.button4.onTrue(new PivotToPositionCommand(50));
-    // Constants.OperatorConstants.button5.onTrue(new PivotToPositionCommand(70));
-    // Constants.OperatorConstants.button6.onTrue(new PivotToPositionCommand(90));
-    
+
     Constants.OperatorConstants.pancakeLeft.whileTrue(new RunArm(false));
     Constants.OperatorConstants.pancakeRight.whileTrue(new RunArm(true));
 
     Constants.OperatorConstants.button1.whileTrue(new IntakeCoral());
     Constants.OperatorConstants.button2.whileTrue(new ReverseCoralIntake());
+
+    Constants.OperatorConstants.dPadUp.whileTrue(new DampenSwerve(0));
+    Constants.OperatorConstants.dPadRight.whileTrue(new DampenSwerve(90));
+    Constants.OperatorConstants.dPadDown.whileTrue(new DampenSwerve(180));
+    Constants.OperatorConstants.dPadLeft.whileTrue(new DampenSwerve(270));
 
 
     OperatorConstants.button7.onTrue(new ArmevatorToPosition(0));
@@ -112,11 +108,11 @@ public class RobotContainer {
 
     OperatorConstants.button12.onTrue(new InstantCommand(() -> ArmSubsystem.getInstance().setArmEncoderPosition(0)));
     
-    OperatorConstants.button3.whileTrue(new RetractAlgaeIntake());
     OperatorConstants.button4.whileTrue(new DeployAlgaeIntake());
+    OperatorConstants.button3.whileTrue(new RetractAlgaeIntake());
     
-    OperatorConstants.button5.whileTrue(new RunAlgaeIntake());
-    OperatorConstants.button6.whileTrue(new ReverseAlgaeIntake());
+    OperatorConstants.button6.whileTrue(new RunAlgaeIntake());
+    OperatorConstants.button5.whileTrue(new ReverseAlgaeIntake());
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
