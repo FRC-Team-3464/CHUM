@@ -11,40 +11,41 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "right start to RBFR-Reef"
+                  "pathName": "middle start to LBF-Reef"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "ElevatorL4"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "PivoterL4"
-                }
-              },
-              {
-                "type": "parallel",
-                "data": {
-                  "commands": []
+                  "name": "ArmevatorL4"
                 }
               }
             ]
           }
         },
         {
-          "type": "wait",
+          "type": "deadline",
           "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "CoralEject"
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.5
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "CoralEject"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ElevatorUp"
+                }
+              }
+            ]
           }
         },
         {
@@ -54,34 +55,34 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "RBFR to Right feeder"
+                  "pathName": "LBF to Right feeder"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "DefaultElevator"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "DefaultPivoter"
+                  "name": "Armevator0"
                 }
               }
             ]
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 0.5
+            "name": "ArmevatorIntake"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "CoralPickup"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Armevator0"
           }
         },
         {
@@ -97,28 +98,35 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "ElevatorL4"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "PivoterL4"
+                  "name": "ArmevatorL4"
                 }
               }
             ]
           }
         },
         {
-          "type": "wait",
+          "type": "deadline",
           "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "CoralEject"
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.5
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "CoralEject"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ElevatorUp"
+                }
+              }
+            ]
           }
         },
         {
@@ -134,22 +142,16 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "DefaultElevator"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "DefaultPivoter"
+                  "name": "Armevator0"
                 }
               }
             ]
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 0.5
+            "name": "ArmevatorIntake"
           }
         },
         {
@@ -159,46 +161,59 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Armevator0"
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "path",
                 "data": {
-                  "pathName": "right feeder to LBB"
+                  "pathName": "right feeder to LBBR"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "ElevatorL4"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "PivoterL4"
+                  "name": "ArmevatorL4"
                 }
               }
             ]
           }
         },
         {
-          "type": "wait",
+          "type": "deadline",
           "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "CoralEject"
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.5
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ElevatorUp"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "CoralEject"
+                }
+              }
+            ]
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Right Start",
+  "folder": null,
   "choreoAuto": false
 }
