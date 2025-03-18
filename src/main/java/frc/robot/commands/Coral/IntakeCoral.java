@@ -35,6 +35,7 @@ public class IntakeCoral extends Command {
   public void execute() {
     // Tune speed later, through trial & error
 
+    if armS
     coralSub.runIntake(-.5);
     if (coralSub.getPhotoElectric()) {
       timer.start();
