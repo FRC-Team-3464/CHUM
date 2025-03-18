@@ -18,7 +18,10 @@ public class IntakeCoral extends Command {
   public IntakeCoral() {
     // Use addRequirements() here to declare subsystem dependencies.
     coralSub = CoralSubsystem.getInstance();
+    armSub = ArmSubsystem.getInstance();
+
     addRequirements(coralSub);
+    addRequirements(armSub);
 
     timer = new Timer();
   }
@@ -35,8 +38,17 @@ public class IntakeCoral extends Command {
   public void execute() {
     // Tune speed later, through trial & error
 
-    if armS
-    coralSub.runIntake(-.5);
+    if(SwerveConstants.targetPosition == 2){
+      coralSub.runIntake(-.9);
+    } else if(SwerveConstants.targetPosition == 3) {
+      coralSub.runIntake(0.5);
+    } else if(SwerveConstants.targetPosition == 4) {
+      coralSub.runIntake(0.5);
+      elevatorSub.runElevator(0.3);
+    } else {
+      coralSub.runIntake(-0.5);
+    }
+
     if (coralSub.getPhotoElectric()) {
       timer.start();
     }

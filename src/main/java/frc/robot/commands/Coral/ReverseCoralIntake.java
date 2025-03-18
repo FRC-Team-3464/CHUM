@@ -15,7 +15,10 @@ public class ReverseCoralIntake extends Command {
   public ReverseCoralIntake() {
     // Use addRequirements() here to declare subsystem dependencies.
     coralSub = CoralSubsystem.getInstance();
+    armSub = ArmSubsystem.getInstance();
+
     addRequirements(coralSub);
+    addRequirements(armSub);
   }
 
   // Called when the command is initially scheduled.
@@ -26,7 +29,11 @@ public class ReverseCoralIntake extends Command {
   @Override
   public void execute() {
     //Tune speed later, through trial & error
-    coralSub.runIntake(0.5);
+    if(SwerveConstants.targetPosition <= 2) {
+      coralSub.runIntake(0.5);
+    } else {
+      coralSub.runIntake(-0.5);
+    }
   }
 
   // Called once the command ends or is interrupted.
