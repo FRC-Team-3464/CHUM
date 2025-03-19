@@ -2,10 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
-
-import frc.robot.util.ModuleConstants;
-import frc.robot.util.ModuleState;
+package frc.robot.util;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.CANcoderConfigurator;
@@ -97,13 +94,14 @@ public class SwerveModule {
         } 
         else {
           driveVelocity.Velocity = desiredState.speedMetersPerSecond / SwerveConstants.driveRevToMeters;
-          driveVelocity.FeedForward = driveFeedForward.calculate(desiredState.speedMetersPerSecond);
+        //   driveVelocity.FeedForward = driveFeedForward.calculate(desiredState.speedMetersPerSecond);
           driveMotor.setControl(driveVelocity);
         }
       }
 
+
     public void setAngle(SwerveModuleState desiredState) {
-        // if(Math.abs(desiredState.speedMetersPerSecond) <= (Constants.SwerveConstants.kMaxTeleDriveSpeed * 0.001))
+        // if (Math.abs(desiredState.speedMetersPerSecond) <= (Constants.SwerveConstants.kMaxTeleDriveSpeed * 0.001))
         // {
         //  turnMotor.stopMotor();
         //  return;

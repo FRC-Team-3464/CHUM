@@ -78,10 +78,12 @@ public class VisionSubsystem extends SubsystemBase {
     return frontCameraTransform;
   }
 
+
+
   public void addVisionMeasurement(PhotonPoseEstimator photonPoseEstimator, PhotonCamera photonCamera) {
-    var results = photonCamera.getAllUnreadResults();
-    Optional<EstimatedRobotPose> result = photonPoseEstimator.update(photonCamera.getAllUnreadResults().get(results.size() - 1));
-    if (result.isPresent()) {
+
+    Optional<EstimatedRobotPose> result = photonPoseEstimator.update(photonCamera.getLatestResult());
+    if (!result.isPresent()) {
       return;
     }
 
@@ -94,7 +96,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // addVisionMeasurement(photonPoseEstimatorFront, frontAprilCamera);
+    addVisionMeasurement(photonPoseEstimatorFront, frontAprilCamera);
     // addVisionMeasurement(photonPoseEstimatorBack, backAprilCamera);
     // This method will be called once per scheduler run
   }

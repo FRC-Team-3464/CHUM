@@ -4,7 +4,9 @@
 
 package frc.robot.commands.Armevator;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.Constants.ArmevatorConstants;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -15,6 +17,8 @@ public class ArmevatorToPosition extends Command {
   private final ArmSubsystem armSub;
   private final ElevatorSubsystem elevatorSub;
   private int target;
+
+  private Timer timer = new Timer();
 
   public ArmevatorToPosition(int position) {
     armSub = ArmSubsystem.getInstance();
@@ -32,6 +36,8 @@ public class ArmevatorToPosition extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    timer.reset();
+    timer.start();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -44,6 +50,7 @@ public class ArmevatorToPosition extends Command {
       elevatorSub.setElevatorTarget(ArmevatorConstants.positions[target][1]);
       armSub.setArmTarget(ArmevatorConstants.positions[target][2]);
     // }
+    Constants.SwerveConstants.targetPosition = target;
 
   }
 

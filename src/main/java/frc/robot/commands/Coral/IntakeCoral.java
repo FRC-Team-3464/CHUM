@@ -6,6 +6,7 @@ package frc.robot.commands.Coral;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.SwerveConstants;
 import frc.robot.subsystems.CoralSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
@@ -13,6 +14,7 @@ public class IntakeCoral extends Command {
 
   private CoralSubsystem coralSub;
   private Timer timer;
+  private double speed;
 
   /** Creates a new IntakeCoral. */
   public IntakeCoral() {
@@ -35,7 +37,9 @@ public class IntakeCoral extends Command {
   public void execute() {
     // Tune speed later, through trial & error
 
-    coralSub.runIntake(-.5);
+    speed = SwerveConstants.targetPosition == 2 ? -0.9 : -0.5;
+
+    coralSub.runIntake(speed);
     if (coralSub.getPhotoElectric()) {
       timer.start();
     }
@@ -52,6 +56,6 @@ public class IntakeCoral extends Command {
   @Override
   public boolean isFinished() {
     // return coralSub.getPhotoElectric();
-    return timer.hasElapsed(.09);
+    return timer.hasElapsed(.1);
   }
 }

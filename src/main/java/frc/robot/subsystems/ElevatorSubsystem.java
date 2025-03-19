@@ -58,6 +58,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   public ElevatorSubsystem() {
     // setting resistance/directions both motors will run in  
     leftEncoder.setPosition(0);
+    elevatorController.setGoal(0);
     elevatorController.setTolerance(1);
     
     LeftResistance = false;
@@ -126,6 +127,10 @@ public class ElevatorSubsystem extends SubsystemBase {
     elevatorController.setGoal(target);
     // leftElevator.setVoltage(elevatorFeedforward.calculate(elevatorController.getSetpoint().velocity));
     leftElevator.setVoltage(elevatorController.calculate(leftEncoder.getPosition()));
+  }
+
+  public boolean elevatorAtPosition() {
+    return elevatorController.atGoal();
   }
 
 

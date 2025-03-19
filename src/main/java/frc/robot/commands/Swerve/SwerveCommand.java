@@ -10,6 +10,7 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Constants.SwerveConstants;
@@ -49,22 +50,24 @@ public class SwerveCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double xSpeed = xSpeedSup.getAsDouble()*0.8;
-    double ySpeed = ySpeedSup.getAsDouble()*0.8;
-    double rotation = rotationSup.getAsDouble();
+    double xSpeed = -ySpeedSup.getAsDouble()*0.8;
+    double ySpeed = -xSpeedSup.getAsDouble()*0.8;
+    double rotation = -rotationSup.getAsDouble();
     
     xSpeed = Math.abs(xSpeed) > Constants.SwerveConstants.kDeadband ? xSpeed : 0.0;
     ySpeed = Math.abs(ySpeed) > SwerveConstants.kDeadband ? ySpeed : 0.0;
     rotation = Math.abs(rotation) > SwerveConstants.kDeadband ? rotation : 0.0;
 
     rotation *= Constants.SwerveConstants.kMaxTeleAngularSpeed;
-    swerveSub.drive(new Translation2d(ySpeed, xSpeed).times(SwerveConstants.kPhysicalMaxSpeed), rotation, robotCentricSup.getAsBoolean(), true);
+    swerveSub.drive(new Translation2d(xSpeed, ySpeed).times(SwerveConstants.kPhysicalMaxSpeed), rotation, robotCentricSup.getAsBoolean(), true);
     // translation strafe
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    swerveSub.drive(new Translation2d(0, 0), 0, false, true);
+  }
 
   // Returns true when the command should end.
   @Override

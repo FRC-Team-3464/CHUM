@@ -12,11 +12,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.SwerveSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class DampenSwerve extends Command {
+public class CrabWalk extends Command {
   /** Creates a new DampenSwerve. */
   private double direction;
   private final SwerveSubsystem swerveSub;
-  public DampenSwerve(double direction) {
+  public CrabWalk(double direction) {
     this.direction = direction;
     swerveSub = SwerveSubsystem.getInstance();
     addRequirements(swerveSub);
@@ -27,17 +27,18 @@ public class DampenSwerve extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    System.out.println(direction);
     if (direction == 0) {
-      swerveSub.drive(new Translation2d(-0.3, 0), 0, false, true);
+      swerveSub.drive(new Translation2d(2, 0), 0, false, true);
     }
     if (direction == 90) {
-      swerveSub.drive(new Translation2d(0, 0.4), 0, false, true);
+      swerveSub.drive(new Translation2d(0, -0.4), 0, false, true);
     }
     if (direction == 180) {
-      swerveSub.drive(new Translation2d(0.3, 0), 0, false, true);
+      swerveSub.drive(new Translation2d(-0.3, 0), 0, false, true);
     }
     if (direction == 270) {
-      swerveSub.drive(new Translation2d(0, -0.4), 0, false, true);
+      swerveSub.drive(new Translation2d(0, 0.4), 0, false, true);
     }
   }
 

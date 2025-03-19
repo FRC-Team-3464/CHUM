@@ -6,6 +6,7 @@ package frc.robot;
 
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.XboxController;
@@ -13,6 +14,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
@@ -29,7 +35,7 @@ import frc.robot.commands.Coral.IntakeCoral;
 import frc.robot.commands.Coral.ReverseCoralIntake;
 import frc.robot.commands.Swerve.AutoCoralPosition;
 import frc.robot.commands.Swerve.AutoPosition;
-import frc.robot.commands.Swerve.DampenSwerve;
+import frc.robot.commands.Swerve.CrabWalk;
 import frc.robot.commands.Swerve.SwerveCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -50,7 +56,6 @@ public class RobotContainer {
 
 
 
-
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     swerveSub.setDefaultCommand(
@@ -60,6 +65,18 @@ public class RobotContainer {
         () -> OperatorConstants.xbox.getRawAxis(XboxController.Axis.kRightX.value), 
         () -> !OperatorConstants.xbox.getYButton())
     );
+
+    NamedCommands.registerCommand("Armevator0", new ArmevatorToPosition(0));
+    NamedCommands.registerCommand("ArmevatorIntake", new ArmevatorToPosition(1));
+    NamedCommands.registerCommand("ArmevatorL2", new ArmevatorToPosition(2));
+    NamedCommands.registerCommand("ArmevatorL3", new ArmevatorToPosition(3));
+    NamedCommands.registerCommand("ArmevatorL4", new ArmevatorToPosition(4));
+
+    NamedCommands.registerCommand("ElevatorUp", new RunElevator(true));
+
+    NamedCommands.registerCommand("CoralEject", new ReverseCoralIntake());
+    NamedCommands.registerCommand("CoralPickup", new IntakeCoral());
+  
 
 
     autoChooser = AutoBuilder.buildAutoChooser();
@@ -86,6 +103,7 @@ public class RobotContainer {
     Constants.OperatorConstants.buttonRB.whileTrue(new AutoCoralPosition(true));
     Constants.OperatorConstants.buttonLB.whileTrue(new AutoCoralPosition(false));
     Constants.OperatorConstants.buttonX.onTrue(new InstantCommand(() -> swerveSub.resetGyro()));
+    Constants.OperatorConstants.buttonA.onTrue(new AutoPosition());
 
 
     Constants.OperatorConstants.pancakeLeft.whileTrue(new RunArm(false));
@@ -94,10 +112,10 @@ public class RobotContainer {
     Constants.OperatorConstants.button1.whileTrue(new IntakeCoral());
     Constants.OperatorConstants.button2.whileTrue(new ReverseCoralIntake());
 
-    Constants.OperatorConstants.dPadUp.whileTrue(new DampenSwerve(0));
-    Constants.OperatorConstants.dPadRight.whileTrue(new DampenSwerve(90));
-    Constants.OperatorConstants.dPadDown.whileTrue(new DampenSwerve(180));
-    Constants.OperatorConstants.dPadLeft.whileTrue(new DampenSwerve(270));
+    Constants.OperatorConstants.dPadUp.whileTrue(new CrabWalk(0));
+    Constants.OperatorConstants.dPadRight.whileTrue(new CrabWalk(90));
+    Constants.OperatorConstants.dPadDown.whileTrue(new CrabWalk(180));
+    Constants.OperatorConstants.dPadLeft.whileTrue(new CrabWalk(270));
 
 
     OperatorConstants.button7.onTrue(new ArmevatorToPosition(0));
@@ -133,6 +151,50 @@ public class RobotContainer {
     // return null;
 
     return autoChooser.getSelected();
+// drive back auto
+    // return new ParallelRaceGroup(
+    //   new WaitCommand(2),
+    //   new SwerveCommand(
+    //     () -> 0.15, 
+    //     () -> 0, 
+    //     () -> 0, 
+    //     () -> true)
+    // );
+
+    // center score auto:
+    
+    // return new SequentialCommandGroup (
+    //   new ParallelDeadlineGroup(
+    //     new WaitCommand(1.5), 
+    //     new ArmevatorToPosition(4)
+    //   ),
+    //   new ParallelRaceGroup(
+    //     new WaitCommand(2.2),
+    //     new SwerveCommand(
+    //       () -> -0.15,
+    //       () -> 0, 
+    //       () -> 0, 
+    //       () -> true)
+    //   ),
+    //   new ParallelDeadlineGroup(
+    //     new WaitCommand(1), 
+    //     new ReverseCoralIntake(),
+    //     new RunElevator(true)
+    //   ),
+    //   new ParallelRaceGroup(
+    //     new WaitCommand(1.5),
+    //     new SwerveCommand(
+    //       () -> 0.15,
+    //       () -> 0, 
+    //       () -> 0, 
+    //       () -> true)
+    //   ),
+    //   new ParallelDeadlineGroup(
+    //     new WaitCommand(1.5), 
+    //     new ArmevatorToPosition(0)
+    //   )
+    // );
+    
 
     // return Autos.exampleAuto(exampleSubsystem);
   }

@@ -105,6 +105,10 @@ public class ArmSubsystem extends SubsystemBase {
     leftEncoder.setPosition(position);
   }
 
+  public boolean armAtPosition() {
+    return armController.atGoal();
+  }
+
   public double getAbsArmPosition() {
     return absArmEncoder.get();
   }

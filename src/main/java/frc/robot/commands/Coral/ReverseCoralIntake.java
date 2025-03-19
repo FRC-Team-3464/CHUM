@@ -5,12 +5,14 @@
 package frc.robot.commands.Coral;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.SwerveConstants;
 import frc.robot.subsystems.CoralSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ReverseCoralIntake extends Command {
  
   private CoralSubsystem coralSub;
+  private double speed;
   /** Creates a new IntakeCoral. */
   public ReverseCoralIntake() {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -26,7 +28,14 @@ public class ReverseCoralIntake extends Command {
   @Override
   public void execute() {
     //Tune speed later, through trial & error
-    coralSub.runIntake(0.5);
+
+    // if (SwerveConstants.targetPosition == 2) {
+    //   speed = -0.5;
+    // }
+    // else {
+    //   speed = 0.5;
+    // }
+    coralSub.runIntake(0.6);
   }
 
   // Called once the command ends or is interrupted.

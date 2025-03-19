@@ -20,8 +20,8 @@ public class AutoPosition extends Command {
   private static final TrapezoidProfile.Constraints Y_CONSTRAINTS = new TrapezoidProfile.Constraints(3, 2);
   private static final TrapezoidProfile.Constraints THETA_CONSTRAINTS = new TrapezoidProfile.Constraints(3, 2);
 
-  private final ProfiledPIDController xController = new ProfiledPIDController(1, 0, 0, X_CONSTRAINTS);
-  private final ProfiledPIDController yController = new ProfiledPIDController(1, 0, 0, Y_CONSTRAINTS);
+  private final ProfiledPIDController xController = new ProfiledPIDController(2, 0, 0, X_CONSTRAINTS);
+  private final ProfiledPIDController yController = new ProfiledPIDController(2, 0, 0, Y_CONSTRAINTS);
   private final ProfiledPIDController thetaController = new ProfiledPIDController(1, 0, 0, THETA_CONSTRAINTS);
  
 
@@ -29,8 +29,8 @@ public class AutoPosition extends Command {
   public final SwerveSubsystem swerveSub = SwerveSubsystem.getInstance();
 
   public AutoPosition() {
-    xController.setTolerance(0.2);
-    yController.setTolerance(0.2);
+    xController.setTolerance(0.1);
+    yController.setTolerance(0.1);
     thetaController.setTolerance(Units.degreesToRadians(0.5));
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
@@ -62,19 +62,19 @@ public class AutoPosition extends Command {
     var ySpeed = yController.atGoal() ? 0 : yController.calculate(robotPose.getY());
     var thetaSpeed = thetaController.atGoal() ? 0 : thetaController.calculate(robotPose.getRotation().getRadians());
 
-
-    System.out.println("y error: " + yController.getPositionError());
-    System.out.println("current y position: " + robotPose.getY());
     // System.out.println("x speed: " + xSpeed);
     // System.out.println("y speed: " + ySpeed);
     // System.out.println("theta speed: " + thetaSpeed);
+
+    System.out.println(robotPose.getX());
 
     // System.out.println("x pose: " + robotPose.getX());
     // System.out.println("y pose: " + robotPose.getY());
     // System.out.println("theta pose: " + robotPose.getRotation().getRadians());
 
 
-    swerveSub.drive(new Translation2d(xSpeed, ySpeed), thetaSpeed, false, false);
+
+    // swerveSub.drive(new Translation2d(xSpeed, ySpeed), thetaSpeed, false, false);
   }
 
   // Called once the command ends or is interrupted.
