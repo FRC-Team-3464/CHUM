@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.DriveForwardAuto;
 import frc.robot.commands.Algae.DeployAlgaeIntake;
 import frc.robot.commands.Algae.RetractAlgaeIntake;
 import frc.robot.commands.Algae.ReverseAlgaeIntake;
@@ -58,7 +59,7 @@ public class RobotContainer {
         () -> Constants.OperatorConstants.xbox.getRawAxis(XboxController.Axis.kLeftY.value),
         () -> Constants.OperatorConstants.xbox.getRawAxis(XboxController.Axis.kLeftX.value), 
         () -> OperatorConstants.xbox.getRawAxis(XboxController.Axis.kRightX.value), 
-        () -> !OperatorConstants.xbox.getYButton())
+        () -> false) //!OperatorConstants.xbox.getYButton()
     );
 
 
@@ -132,8 +133,9 @@ public class RobotContainer {
     // An example command will be run in autonomous
     // return null;
 
-    return autoChooser.getSelected();
+    // return autoChooser.getSelected();
 
+    return new DriveForwardAuto();
     // return Autos.exampleAuto(exampleSubsystem);
   }
 }
