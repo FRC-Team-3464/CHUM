@@ -116,7 +116,6 @@ public class ElevatorSubsystem extends SubsystemBase {
     else {
       leftElevator.set(speed);
     }
-    System.out.println(speed);
   }
 
   public void setElevatorPosition(double position) {

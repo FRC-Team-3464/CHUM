@@ -4,23 +4,40 @@
 
 package frc.robot.commands.Coral;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.SwerveConstants;
+import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.CoralSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class IntakeCoral extends Command {
 
   private CoralSubsystem coralSub;
+  private ElevatorSubsystem elevatorSub;
   private Timer timer;
   private double speed;
+  private final Map<Integer, Double> speedsMap = Map.ofEntries(
+    Map.entry(0, -0.5),
+    Map.entry(1, -0.5),
+    Map.entry(2, -0.9),
+    Map.entry(3, 0.5),
+    Map.entry(4, 0.5)
+  );
+  
 
   /** Creates a new IntakeCoral. */
   public IntakeCoral() {
     // Use addRequirements() here to declare subsystem dependencies.
     coralSub = CoralSubsystem.getInstance();
+    elevatorSub = ElevatorSubsystem.getInstance();
+
     addRequirements(coralSub);
+    addRequirements(elevatorSub);
 
     timer = new Timer();
   }
@@ -37,13 +54,18 @@ public class IntakeCoral extends Command {
   public void execute() {
     // Tune speed later, through trial & error
 
-    speed = SwerveConstants.targetPosition == 2 ? -0.9 : -0.5;
+    speed = speedsMap.get(SwerveConstants.targetPosition);
+    System.out.println(SwerveConstants.targetPosition);
 
-    coralSub.runIntake(speed);
-    if (coralSub.getPhotoElectric()) {
+    if(SwerveConstants.targetPosition == 4){
+      coralSub.runIntake(speed);
+      elevatorSub.runElevator(0.3);
+    } else {
+      coralSub.runIntake(speed);
+    }
+    if (coralSub.getPhotoElectric() && SwerveConstants.targetPosition == 1) {
       timer.start();
     }
-    System.out.println(timer.get());
   }
 
   // Called once the command ends or is interrupted.
