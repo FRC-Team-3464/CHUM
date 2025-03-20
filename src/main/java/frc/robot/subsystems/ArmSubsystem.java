@@ -111,14 +111,14 @@ public class ArmSubsystem extends SubsystemBase {
     return armController.atGoal();
   }
 
-  public double getAbsArmPosition() {
-    return absArmEncoder.getPosition();
+  public double getAbsArmDegrees() {
+    return (absArmEncoder.getPosition()*Constants.ArmevatorConstants.kAbsoluteEncoderRatio);
   }
 
-  public double getArmDegrees() {
-    double rotations = getAbsArmPosition();
-    return rotations * (360/277);
-  }
+  // public double getArmDegrees() {
+  //   double rotations = getAbsArmDegrees();
+  //   return rotations * (360/277);
+  // }
 
 
   public boolean getMaxArmLimit() {

@@ -35,6 +35,7 @@ public final class Constants {
 
   public static class ArmevatorConstants {
     public static double kElevatorGearRatio = 20;
+    public static double kAbsoluteEncoderRatio = 1/8;
 
     // table with index, elevator, and arm positions
     public static double[][] positions  = {
