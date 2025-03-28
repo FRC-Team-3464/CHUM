@@ -4,6 +4,8 @@
 
 package frc.robot.util;
 
+import java.time.chrono.IsoChronology;
+
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.CANcoderConfigurator;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
@@ -13,6 +15,7 @@ import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.ControlModeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.revrobotics.RelativeEncoder;
@@ -89,11 +92,12 @@ public class SwerveModule {
 
     private void setSpeed(SwerveModuleState desiredState, boolean isOpenLoop) {
         if (isOpenLoop) {
-          driveDutyCycle.Output = desiredState.speedMetersPerSecond / Constants.SwerveConstants.kMaxTeleDriveSpeed;
-          driveMotor.setControl(driveDutyCycle);
-        } 
+            double percentOutput = desiredState.speedMetersPerSecond / SwerveConstants.kPhysicalMaxSpeed;
+            driveMotor.set(percentOutput);
+        }
+
         else {
-          driveVelocity.Velocity = desiredState.speedMetersPerSecond / SwerveConstants.driveRevToMeters;
+          driveVelocity.Velocity = desiredState.speedMetersPerSecond / SwerveConstants.wheelCircumference;
         //   driveVelocity.FeedForward = driveFeedForward.calculate(desiredState.speedMetersPerSecond);
           driveMotor.setControl(driveVelocity);
         }
@@ -109,6 +113,14 @@ public class SwerveModule {
         Rotation2d angle = desiredState.angle;
          SparkClosedLoopController controller = turnMotor.getClosedLoopController();
          controller.setReference(angle.getDegrees(), ControlType.kPosition, ClosedLoopSlot.kSlot0);
+    }
+
+    public double getTurnCurrent() {
+        return turnMotor.getAppliedOutput();
+    }
+
+    public double getDriveCurrent() {
+        return driveMotor.getSupplyCurrent().getValueAsDouble();
     }
 
     private Rotation2d getAngle() {
@@ -162,7 +174,7 @@ public class SwerveModule {
         turnSparkMaxConfig = new SparkMaxConfig();
         turnEncoderConfig = new EncoderConfig();
         turnSparkMaxConfig
-            .smartCurrentLimit(SwerveConstants.angleContinuousCurrentLimit)
+            .smartCurrentLimit(SwerveConstants.anglePeakCurrentLimit)
             .idleMode(SwerveConstants.angleIdleMode)
             .inverted(SwerveConstants.angleMotorInvert)
             .closedLoop
