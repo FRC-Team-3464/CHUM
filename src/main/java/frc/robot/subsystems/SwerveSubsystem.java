@@ -14,6 +14,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 
@@ -36,6 +37,7 @@ public class SwerveSubsystem extends SubsystemBase {
   public static SwerveSubsystem instance;
   public SwerveDriveOdometry swerveOdometry;
   public SwerveModule[] swerveMods;
+
   public AHRS gyro;
   public SwerveDrivePoseEstimator poseEstimator;
   public RobotConfig config;
@@ -71,13 +73,13 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
      AutoBuilder.configure(
-            this::getPose, // Robot pose supplier
+            this::getSwervePose, // Robot pose supplier
             this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
             this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
             (speeds, feedforwards) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
             new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-                    new PIDConstants(1.0, 0.0, 0.0), // Translation PID constants
-                    new PIDConstants(3.0, 0.0, 0.0) // Rotation PID constants
+                    new PIDConstants(3.0, 0.0, 0.0), // Translation PID constants
+                    new PIDConstants(2.0, 0.0, 0.0) // Rotation PID constants
             ),
             config, // The robot configuration
             () -> {
@@ -146,6 +148,10 @@ public class SwerveSubsystem extends SubsystemBase {
     gyro.reset();
   }
 
+  public void offsetGyro(double angle) {
+    gyro.setAngleAdjustment(angle);
+  }
+
   public void driveRobotRelative(ChassisSpeeds speeds) {
     SwerveModuleState[] swerveModuleStates = Constants.SwerveConstants.swerveKinematics.toSwerveModuleStates(speeds);
     setModuleStates(swerveModuleStates);
@@ -153,6 +159,10 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public Pose2d getPose() {
     return poseEstimator.getEstimatedPosition();
+  }
+
+  public Pose2d getSwervePose() {
+    return swerveOdometry.getPoseMeters();
   }
 
   public void zeroPose() {
@@ -193,11 +203,18 @@ public class SwerveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     poseEstimator.update(getYaw(), getModulePositions());
-    field.setRobotPose(getPose());
+
+    SmartDashboard.putNumber("Gyro Heading", gyro.getAngle());
+    // field.setRobotPose(getPose());
+
+    SmartDashboard.putData("Field", field);
+
     for(SwerveModule mod : swerveMods){
       SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Cancoder", mod.getCanCoder().getDegrees());
       SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Integrated", mod.getPosition().angle.getDegrees());
-      SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond); 
+      SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);
+      SmartDashboard.putNumber("Mod" + mod.moduleNumber + "Turn Motor Current", mod.getTurnCurrent());
+      SmartDashboard.putNumber("Mod" + mod.moduleNumber + "Drive Motor Current", mod.getDriveCurrent());
     // This method will be called once per scheduler run
     }
   }

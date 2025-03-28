@@ -50,8 +50,8 @@ public class SwerveCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double xSpeed = -ySpeedSup.getAsDouble()*0.8;
-    double ySpeed = -xSpeedSup.getAsDouble()*0.8;
+    double xSpeed = -ySpeedSup.getAsDouble();
+    double ySpeed = -xSpeedSup.getAsDouble();
     double rotation = -rotationSup.getAsDouble();
     
     xSpeed = Math.abs(xSpeed) > Constants.SwerveConstants.kDeadband ? xSpeed : 0.0;
@@ -66,7 +66,7 @@ public class SwerveCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    swerveSub.drive(new Translation2d(0, 0), 0, false, true);
+    swerveSub.drive(new Translation2d(0, 0), 0, robotCentricSup.getAsBoolean(), true);
   }
 
   // Returns true when the command should end.

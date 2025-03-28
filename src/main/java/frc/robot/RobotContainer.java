@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import java.lang.management.OperatingSystemMXBean;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -34,7 +35,7 @@ import frc.robot.commands.Armevator.RunArm;
 import frc.robot.commands.Armevator.RunElevator;
 import frc.robot.commands.Coral.IntakeCoral;
 import frc.robot.commands.Coral.ReverseCoralIntake;
-import frc.robot.commands.Swerve.AutoCoralPosition;
+import frc.robot.commands.Swerve.AutoAlignReef;
 import frc.robot.commands.Swerve.AutoPosition;
 import frc.robot.commands.Swerve.CrabWalk;
 import frc.robot.commands.Swerve.SwerveCommand;
@@ -64,7 +65,7 @@ public class RobotContainer {
         () -> Constants.OperatorConstants.xbox.getRawAxis(XboxController.Axis.kLeftY.value),
         () -> Constants.OperatorConstants.xbox.getRawAxis(XboxController.Axis.kLeftX.value), 
         () -> OperatorConstants.xbox.getRawAxis(XboxController.Axis.kRightX.value), 
-        () -> false) //!OperatorConstants.xbox.getYButton()
+        () -> true) //!OperatorConstants.xbox.getYButton()
     );
 
     NamedCommands.registerCommand("Armevator0", new ArmevatorToPosition(0));
@@ -101,11 +102,13 @@ public class RobotContainer {
     Constants.OperatorConstants.pancakeUp.whileTrue(new RunElevator(true));
     Constants.OperatorConstants.pancakeDown.whileTrue(new RunElevator(false));
 
-    Constants.OperatorConstants.buttonRB.whileTrue(new AutoCoralPosition(true));
-    Constants.OperatorConstants.buttonLB.whileTrue(new AutoCoralPosition(false));
-    Constants.OperatorConstants.buttonX.onTrue(new InstantCommand(() -> swerveSub.resetGyro()));
-    Constants.OperatorConstants.buttonA.onTrue(new AutoPosition());
+    Constants.OperatorConstants.buttonRB.whileTrue(new AutoAlignReef(true));
+    Constants.OperatorConstants.buttonLB.whileTrue(new AutoAlignReef(false));
 
+    Constants.OperatorConstants.buttonX.onTrue(new InstantCommand(() -> swerveSub.resetGyro()));
+    // Constants.OperatorConstants.buttonA.whileTrue(new AutoPosition());
+
+    
 
     Constants.OperatorConstants.pancakeLeft.whileTrue(new RunArm(false));
     Constants.OperatorConstants.pancakeRight.whileTrue(new RunArm(true));
@@ -117,7 +120,6 @@ public class RobotContainer {
     Constants.OperatorConstants.dPadRight.whileTrue(new CrabWalk(90));
     Constants.OperatorConstants.dPadDown.whileTrue(new CrabWalk(180));
     Constants.OperatorConstants.dPadLeft.whileTrue(new CrabWalk(270));
-
 
     OperatorConstants.button7.onTrue(new ArmevatorToPosition(0));
     OperatorConstants.button8.onTrue(new ArmevatorToPosition(1));
