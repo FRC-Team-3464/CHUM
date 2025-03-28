@@ -5,19 +5,19 @@
     "data": {
       "commands": [
         {
-          "type": "parallel",
+          "type": "sequential",
           "data": {
             "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "middle start to LBF-Reef"
-                }
-              },
               {
                 "type": "named",
                 "data": {
                   "name": "ArmevatorL4"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "middle start to LBF-Reef"
                 }
               }
             ]
@@ -37,12 +37,6 @@
                 "type": "named",
                 "data": {
                   "name": "CoralEject"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "ElevatorUp"
                 }
               }
             ]
@@ -119,12 +113,6 @@
                 "data": {
                   "name": "CoralEject"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "ElevatorUp"
-                }
               }
             ]
           }
@@ -193,12 +181,6 @@
                 "type": "wait",
                 "data": {
                   "waitTime": 0.5
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "ElevatorUp"
                 }
               },
               {

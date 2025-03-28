@@ -3,32 +3,37 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.598220198675497,
-        "y": 6.196957781460585
-      },
-      "prevControl": null,
-      "nextControl": {
-        "x": 5.535223509937359,
-        "y": 6.632802152320738
-      },
-      "isLocked": false,
-      "linkedName": "left start"
-    },
-    {
-      "anchor": {
         "x": 3.6683567880794703,
         "y": 5.114610927152318
       },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.8881754122301944,
+        "y": 5.261361923331747
+      },
+      "isLocked": false,
+      "linkedName": "RBBL"
+    },
+    {
+      "anchor": {
+        "x": 3.181663907284768,
+        "y": 5.296212748344371
+      },
       "prevControl": {
-        "x": 1.9685637417254396,
-        "y": 6.523841059605505
+        "x": 2.9244340198011614,
+        "y": 5.2700743710380396
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "RBBL"
+      "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": -59.99999999999999
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -42,13 +47,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -59.99999999999999
+    "rotation": 0.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "wesley's folder",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": -59.99999999999999
   },
   "useDefaultConstraints": true
 }

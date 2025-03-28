@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.598220198675497,
-        "y": 6.196957781460585
+        "x": 3.6393004966887417,
+        "y": 2.913596854304635
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.535223509937359,
-        "y": 6.632802152320738
+        "x": 3.588649095679753,
+        "y": 2.6687817494278594
       },
       "isLocked": false,
-      "linkedName": "left start"
+      "linkedName": "LBBR"
     },
     {
       "anchor": {
-        "x": 3.6683567880794703,
-        "y": 5.114610927152318
+        "x": 3.3923220198675494,
+        "y": 2.405111754966888
       },
       "prevControl": {
-        "x": 1.9685637417254396,
-        "y": 6.523841059605505
+        "x": 3.303658461337415,
+        "y": 2.6388611365463337
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "RBBL"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -41,14 +41,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": -59.99999999999999
+    "velocity": 0.0,
+    "rotation": 0.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "wesley's folder",
   "idealStartingState": {
-    "velocity": 0,
-    "rotation": 180.0
+    "velocity": 0.0,
+    "rotation": 59.99999999999999
   },
   "useDefaultConstraints": true
 }
