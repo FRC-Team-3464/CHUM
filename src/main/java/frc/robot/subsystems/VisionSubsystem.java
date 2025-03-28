@@ -81,8 +81,9 @@ public class VisionSubsystem extends SubsystemBase {
 
 
   public void addVisionMeasurement(PhotonPoseEstimator photonPoseEstimator, PhotonCamera photonCamera) {
+    var results = photonCamera.getAllUnreadResults();
 
-    Optional<EstimatedRobotPose> result = photonPoseEstimator.update(photonCamera.getLatestResult());
+    Optional<EstimatedRobotPose> result = photonPoseEstimator.update(results.get(results.size() - 1));
     if (!result.isPresent()) {
       return;
     }
@@ -96,7 +97,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    addVisionMeasurement(photonPoseEstimatorFront, frontAprilCamera);
+    // addVisionMeasurement(photonPoseEstimatorFront, frontAprilCamera);
     // addVisionMeasurement(photonPoseEstimatorBack, backAprilCamera);
     // This method will be called once per scheduler run
   }
