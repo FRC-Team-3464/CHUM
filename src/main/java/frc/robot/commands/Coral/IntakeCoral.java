@@ -21,23 +21,21 @@ public class IntakeCoral extends Command {
   private ElevatorSubsystem elevatorSub;
   private Timer timer;
   private double speed;
-  private final Map<Integer, Double> speedsMap = Map.ofEntries(
-    Map.entry(0, -0.5),
-    Map.entry(1, -0.5),
-    Map.entry(2, -0.9),
-    Map.entry(3, 0.5),
-    Map.entry(4, 0.5)
-  );
+  // private final Map<Integer, Double> speedsMap = Map.ofEntries(
+  //   Map.entry(0, -0.5),
+  //   Map.entry(1, -0.5),
+  //   Map.entry(2, -0.9),
+  //   Map.entry(3, 0.5),
+  //   Map.entry(4, 0.5)
+  // );
   
 
   /** Creates a new IntakeCoral. */
   public IntakeCoral() {
     // Use addRequirements() here to declare subsystem dependencies.
     coralSub = CoralSubsystem.getInstance();
-    elevatorSub = ElevatorSubsystem.getInstance();
 
     addRequirements(coralSub);
-    addRequirements(elevatorSub);
 
     timer = new Timer();
   }
@@ -54,18 +52,24 @@ public class IntakeCoral extends Command {
   public void execute() {
     // Tune speed later, through trial & error
 
-    speed = speedsMap.get(SwerveConstants.targetPosition);
-    System.out.println(SwerveConstants.targetPosition);
-
-    if(SwerveConstants.targetPosition == 4){
-      coralSub.runIntake(speed);
-      elevatorSub.runElevator(0.3);
-    } else {
-      coralSub.runIntake(speed);
-    }
-    if (coralSub.getPhotoElectric() && SwerveConstants.targetPosition == 1) {
+    // speed = speedsMap.get(SwerveConstants.targetPosition);
+    // System.out.println(SwerveConstants.targetPosition);
+    coralSub.runIntake(-0.5);
+    if (coralSub.getPhotoElectric()) {
       timer.start();
     }
+    
+    
+
+    // if(SwerveConstants.targetPosition == 4){
+    //   coralSub.runIntake(speed);
+    //   elevatorSub.runElevator(0.3);
+    // } else {
+    //   coralSub.runIntake(speed);
+    // }
+    // if (coralSub.getPhotoElectric() && SwerveConstants.targetPosition == 1) {
+    //   timer.start();
+    // }
   }
 
   // Called once the command ends or is interrupted.
