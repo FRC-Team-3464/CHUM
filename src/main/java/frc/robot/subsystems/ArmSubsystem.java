@@ -31,7 +31,7 @@ public class ArmSubsystem extends SubsystemBase {
   private final DutyCycleEncoder absArmEncoder = new DutyCycleEncoder(3);
   private static ArmSubsystem instance = null;
 
-  private final ProfiledPIDController armController = new ProfiledPIDController(.9, 0, 00, new TrapezoidProfile.Constraints(100, 300));
+  private final ProfiledPIDController armController = new ProfiledPIDController(1.0, 0, 0, new TrapezoidProfile.Constraints(140, 300));
   private final ArmFeedforward armFeedforward = new ArmFeedforward(0, 0, 0, 0);
 
   private final RelativeEncoder leftEncoder = leftMotor.getEncoder();
@@ -43,7 +43,7 @@ public class ArmSubsystem extends SubsystemBase {
   private SparkMaxConfig rightMotorConfig;
 
   public ArmSubsystem() {
-    armController.setTolerance(.5);
+    armController.setTolerance(.1);
     rightMotorConfig = new SparkMaxConfig();
     rightMotorConfig.follow(11, true);
     rightMotor.configure(rightMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -91,10 +91,9 @@ public class ArmSubsystem extends SubsystemBase {
 
   public void setArmTarget(double target) {
     armController.setGoal(target);
+
     leftMotor.setVoltage(armController.calculate(getRelativeArmPosition()));
     // System.out.println("arm voltage: " + armController.calculate(getRelativeArmPosition()) + "     arm position: "  + getRelativeArmPosition() + "    target: " + target);
-
-    // leftMotor.setVoltage(armController.calculate(leftEncoder.getPosition()) + armFeedforward.calculate(Units.degreesToRadians(leftEncoder.getPosition()-90), armController.getSetpoint().velocity));
   }
 
   public double getRelativeArmPosition() {
@@ -106,7 +105,7 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public boolean armAtPosition() {
-    return armController.atGoal();
+    return armController.atSetpoint();
   }
 
   public double getAbsArmPosition() {

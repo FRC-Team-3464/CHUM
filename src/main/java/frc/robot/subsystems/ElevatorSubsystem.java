@@ -38,7 +38,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     private final RelativeEncoder leftEncoder = leftElevator.getEncoder();
     private final RelativeEncoder rightEncoder = rightElevator.getEncoder();
 
-    private final ProfiledPIDController elevatorController = new ProfiledPIDController(0.8, 0, 0, new TrapezoidProfile.Constraints(120, 800));
+    private final ProfiledPIDController elevatorController = new ProfiledPIDController(0.8, 0, 0, new TrapezoidProfile.Constraints(140, 800));
     private final ElevatorFeedforward elevatorFeedforward = new ElevatorFeedforward(.081, .254, 1, .01); // to be used in the future hopefully
 
 
@@ -59,7 +59,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     // setting resistance/directions both motors will run in  
     leftEncoder.setPosition(0);
     elevatorController.setGoal(0);
-    elevatorController.setTolerance(1);
+    elevatorController.setTolerance(0.1);
     
     LeftResistance = false;
     RightResistance = false; 
@@ -105,6 +105,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
   }
 
+ 
+
   // setting the default speed of the left elevator at zero while also accounting for limit switches
   public void runElevator(double speed) {
     if (getMinElevatorLimit() && speed < 0) {
@@ -125,13 +127,16 @@ public class ElevatorSubsystem extends SubsystemBase {
   public void setElevatorTarget(double target) {
     elevatorController.setGoal(target);
     // leftElevator.setVoltage(elevatorFeedforward.calculate(elevatorController.getSetpoint().velocity));
-    leftElevator.setVoltage(elevatorController.calculate(leftEncoder.getPosition()));
+    leftElevator.setVoltage(elevatorController.calculate(leftEncoder.getPosition()) + 0.2);
   }
 
-  public boolean elevatorAtPosition() {
-    return elevatorController.atGoal();
+  public void setFeedForward() {
+    leftElevator.set(0.254);
   }
 
+  public Boolean elevatorAtPosition() {
+    return elevatorController.atSetpoint();
+  }
 
   public double getElevatorPosition() {
     // gets elevator position based on number of rotations of duty cycle encoder
@@ -167,6 +172,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Elevator Speed", leftEncoder.getVelocity());
     SmartDashboard.putNumber("Elevator Voltage", leftElevator.getAppliedOutput()*RobotController.getBatteryVoltage());
+    SmartDashboard.putBoolean("Elevator At Target", elevatorAtPosition());
   }
 
   
