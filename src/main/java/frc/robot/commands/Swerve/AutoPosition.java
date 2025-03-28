@@ -4,24 +4,33 @@
 
 package frc.robot.commands.Swerve;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.SwerveConstants;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class AutoPosition extends Command {
   /** Creates a new AutoPosition. */
+  TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
+        2,
+        3)
+                .setKinematics(SwerveConstants.swerveKinematics);
+                
   private static final TrapezoidProfile.Constraints X_CONSTRAINTS = new TrapezoidProfile.Constraints(3, 2);
   private static final TrapezoidProfile.Constraints Y_CONSTRAINTS = new TrapezoidProfile.Constraints(3, 2);
   private static final TrapezoidProfile.Constraints THETA_CONSTRAINTS = new TrapezoidProfile.Constraints(3, 2);
 
-  private final ProfiledPIDController xController = new ProfiledPIDController(2, 0, 0, X_CONSTRAINTS);
-  private final ProfiledPIDController yController = new ProfiledPIDController(2, 0, 0, Y_CONSTRAINTS);
+  private final PIDController xController = new PIDController(1.5, 0, 0);
+  private final PIDController yController = new PIDController(1.5, 0, 0);
   private final ProfiledPIDController thetaController = new ProfiledPIDController(1, 0, 0, THETA_CONSTRAINTS);
  
 
@@ -45,6 +54,11 @@ public class AutoPosition extends Command {
     var robotPose = swerveSub.getPose();
     xController.reset(robotPose.getX());
     yController.reset(robotPose.getY());
+
+    xController.setGoal(robotPose.getX() + 0.5);
+    yController.setGoal(robotPose.getY() + 0.5);
+    thetaController.setGoal(0);   
+    
     thetaController.reset(robotPose.getRotation().getRadians());
     System.out.println("robiot pose is at the beginning: " + robotPose);
   }
@@ -52,25 +66,17 @@ public class AutoPosition extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
-    xController.setGoal(0.5);
-    yController.setGoal(0.5);
-    thetaController.setGoal(0);   
     
     var robotPose = swerveSub.getPose();
-    var xSpeed = xController.atGoal() ? 0 : xController.calculate(robotPose.getX());
-    var ySpeed = yController.atGoal() ? 0 : yController.calculate(robotPose.getY());
-    var thetaSpeed = thetaController.atGoal() ? 0 : thetaController.calculate(robotPose.getRotation().getRadians());
+    var xSpeed = xController.atSetpoint() ? 0 : xController.calculate(robotPose.getX());
+    var ySpeed = yController.atSetpoint() ? 0 : yController.calculate(robotPose.getY());
+    var thetaSpeed = thetaController.atSetpoint() ? 0 : thetaController.calculate(robotPose.getRotation().getRadians());
 
-    // System.out.println("x speed: " + xSpeed);
-    // System.out.println("y speed: " + ySpeed);
-    // System.out.println("theta speed: " + thetaSpeed);
 
-    System.out.println(robotPose.getX());
 
-    // System.out.println("x pose: " + robotPose.getX());
-    // System.out.println("y pose: " + robotPose.getY());
-    // System.out.println("theta pose: " + robotPose.getRotation().getRadians());
+    System.out.println("x pose: " + robotPose.getX());
+    System.out.println("y pose: " + robotPose.getY());
+    System.out.println("theta pose: " + robotPose.getRotation().getRadians());
 
 
 
