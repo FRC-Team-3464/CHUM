@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 
 import com.revrobotics.spark.SparkMax;
@@ -11,6 +12,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.AbsoluteEncoderConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
@@ -28,7 +30,7 @@ public class ArmSubsystem extends SubsystemBase {
   private final SparkMax leftMotor = new SparkMax(11, MotorType.kBrushless);
   private final SparkMax rightMotor = new SparkMax(12, MotorType.kBrushless);
 
-  private final DutyCycleEncoder absArmEncoder = new DutyCycleEncoder(3);
+  private final AbsoluteEncoder absArmEncoder = leftMotor.getAbsoluteEncoder();
   private static ArmSubsystem instance = null;
 
   private final ProfiledPIDController armController = new ProfiledPIDController(1.0, 0, 0, new TrapezoidProfile.Constraints(140, 300));
@@ -109,7 +111,7 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public double getAbsArmPosition() {
-    return absArmEncoder.get();
+    return absArmEncoder.getPosition();
   }
 
   public double getArmDegrees() {
@@ -136,6 +138,7 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Arm Degrees", getRelativeArmPosition());
     SmartDashboard.putBoolean("Arm Max Limit", getMaxArmLimit());
     SmartDashboard.putBoolean("Arm Min Limit", getMinArmLimit());
+    SmartDashboard.putNumber("Abs Encoder Degrees", getAbsArmPosition());
     // SmartDashboard.putNumber("Arm Setpoint", moveToPosition());
   }
 }
