@@ -33,7 +33,9 @@ public class ArmSubsystem extends SubsystemBase {
   private final AbsoluteEncoder absArmEncoder = leftMotor.getAbsoluteEncoder();
   private static ArmSubsystem instance = null;
 
-  private final ProfiledPIDController armController = new ProfiledPIDController(1.0, 0, 0, new TrapezoidProfile.Constraints(140, 300));
+  private boolean manual;
+
+  private final ProfiledPIDController armController = new ProfiledPIDController(0.9, 0, 0, new TrapezoidProfile.Constraints(140, 300));
   private final ArmFeedforward armFeedforward = new ArmFeedforward(0, 0, 0, 0);
 
   private final RelativeEncoder leftEncoder = leftMotor.getEncoder();
@@ -43,14 +45,21 @@ public class ArmSubsystem extends SubsystemBase {
   private final DigitalInput maxArmSwitch = new DigitalInput(5);
   
   private SparkMaxConfig rightMotorConfig;
+  private SparkMaxConfig leftMotorConfig;
 
   public ArmSubsystem() {
     armController.setTolerance(.1);
+
+    leftMotorConfig = new SparkMaxConfig();
+    leftMotorConfig.absoluteEncoder.zeroOffset(0);
+    leftMotorConfig.absoluteEncoder.positionConversionFactor(160);
+    leftMotorConfig.absoluteEncoder.inverted(true);
+    leftMotor.configure(leftMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
     rightMotorConfig = new SparkMaxConfig();
     rightMotorConfig.follow(11, true);
-    rightMotor.configure(rightMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    rightMotor.configure(rightMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);   
     leftEncoder.setPosition(0);
-    
   }
 
   public static ArmSubsystem getInstance() {
@@ -70,7 +79,17 @@ public class ArmSubsystem extends SubsystemBase {
     // else {
     //   leftMotor.set(speed);
     // }
+    // if (getAbsArmPosition() > 90 && speed > 0) {
+    //   leftMotor.set(0);
+    // }
+    // else if (getAbsArmPosition() < 8 && speed < 0) {
+    //   leftMotor.set(0);
+    // }
+    // else {
+    manual = true;
     leftMotor.set(speed);
+    // }
+
   }
 
   public void moveToPosition(double target) {
@@ -92,9 +111,13 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void setArmTarget(double target) {
+    manual = false;
     armController.setGoal(target);
+    // double voltage = armController.calculate(getRelativeArmPosition());
+    // if (getAbsArmPosition() > 90 && voltage > 0) {
+    //   leftMotor.set(0);
+    // }
 
-    leftMotor.setVoltage(armController.calculate(getRelativeArmPosition()));
     // System.out.println("arm voltage: " + armController.calculate(getRelativeArmPosition()) + "     arm position: "  + getRelativeArmPosition() + "    target: " + target);
   }
 
@@ -135,10 +158,15 @@ public class ArmSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
+    SmartDashboard.putNumber("Arm Velocity", leftEncoder.getVelocity());
     SmartDashboard.putNumber("Arm Degrees", getRelativeArmPosition());
     SmartDashboard.putBoolean("Arm Max Limit", getMaxArmLimit());
     SmartDashboard.putBoolean("Arm Min Limit", getMinArmLimit());
     SmartDashboard.putNumber("Abs Encoder Degrees", getAbsArmPosition());
     // SmartDashboard.putNumber("Arm Setpoint", moveToPosition());
+    if (!manual) {
+      leftMotor.setVoltage(armController.calculate(getRelativeArmPosition()));
+    }
   }
 }

@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.590956125827814,
-        "y": 4.003207781456953
+        "x": 7.184168046357616,
+        "y": 3.8651903973509936
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.162375827814569,
-        "y": 3.9015107615894045
+        "x": 6.646626655629139,
+        "y": 3.8651903973509936
       },
       "isLocked": false,
       "linkedName": "middle start"
@@ -20,12 +20,12 @@
         "y": 3.8651903973509936
       },
       "prevControl": {
-        "x": 5.571376334498331,
-        "y": 3.8655423076729147
+        "x": 6.094724895510881,
+        "y": 3.8651903973509936
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "F-Reef"
+      "linkedName": "LBF"
     }
   ],
   "rotationTargets": [],

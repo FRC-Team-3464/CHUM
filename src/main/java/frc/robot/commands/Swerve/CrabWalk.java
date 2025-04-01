@@ -29,7 +29,7 @@ public class CrabWalk extends Command {
   public void initialize() {
     System.out.println(direction);
     if (direction == 0) {
-      swerveSub.drive(new Translation2d(2, 0), 0, false, true);
+      swerveSub.drive(new Translation2d(0.5, 0), 0, false, true);
     }
     if (direction == 90) {
       swerveSub.drive(new Translation2d(0, -0.4), 0, false, true);

@@ -53,9 +53,22 @@
                 }
               },
               {
-                "type": "named",
+                "type": "sequential",
                 "data": {
-                  "name": "Armevator0"
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.5
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Armevator0"
+                      }
+                    }
+                  ]
                 }
               }
             ]
@@ -128,9 +141,22 @@
                 }
               },
               {
-                "type": "named",
+                "type": "sequential",
                 "data": {
-                  "name": "Armevator0"
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.5
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Armevator0"
+                      }
+                    }
+                  ]
                 }
               }
             ]
@@ -152,6 +178,12 @@
           "type": "named",
           "data": {
             "name": "Armevator0"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Right Feeder - reset gyro"
           }
         }
       ]

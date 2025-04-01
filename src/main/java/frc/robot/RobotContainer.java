@@ -164,7 +164,7 @@ public class RobotContainer {
     //     () -> true)
     // );
 
-    // center score auto:
+    // center L4 auto without auto align:
     
     // return new SequentialCommandGroup (
     //   new ParallelDeadlineGroup(
@@ -181,15 +181,48 @@ public class RobotContainer {
     //   ),
     //   new ParallelDeadlineGroup(
     //     new WaitCommand(1), 
-    //     new ReverseCoralIntake(),
-    //     new RunElevator(true)
+    //     new ReverseCoralIntake()
     //   ),
     //   new ParallelRaceGroup(
-    //     new WaitCommand(1.5),
+    //     new WaitCommand(1.0),
     //     new SwerveCommand(
     //       () -> 0.15,
     //       () -> 0, 
+    //       () -> 0,  
+    //       () -> true)
+    //   ),
+    //   new ParallelDeadlineGroup(
+    //     new WaitCommand(1.5), 
+    //     new ArmevatorToPosition(0)
+    //   )
+    // );
+
+    // center L4 auto with auto align:
+
+    // return new SequentialCommandGroup (
+    //   new ParallelDeadlineGroup(
+    //     new WaitCommand(1.5), 
+    //     new ArmevatorToPosition(4)
+    //   ),
+    //   new ParallelRaceGroup(
+    //     new WaitCommand(1),
+    //     new SwerveCommand(
+    //       () -> -0.15,
     //       () -> 0, 
+    //       () -> 0, 
+    //       () -> true)
+    //   ),
+    //   new AutoAlignReef(true),
+    //   new ParallelDeadlineGroup(
+    //     new WaitCommand(1), 
+    //     new ReverseCoralIntake()
+    //   ),
+    //   new ParallelRaceGroup(
+    //     new WaitCommand(1.0),
+    //     new SwerveCommand(
+    //       () -> 0.15,
+    //       () -> 0, 
+    //       () -> 0,  
     //       () -> true)
     //   ),
     //   new ParallelDeadlineGroup(

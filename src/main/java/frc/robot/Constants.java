@@ -39,7 +39,7 @@ public final class Constants {
     // table with index, elevator, and arm positions
     public static double[][] positions  = {
       {0, 0, 0}, // stowed position
-      {1, 22.38, -4.14}, // intake position 3.714
+      {1, 22.7, -4.14}, // intake position 3.714
       {2, 33.666, 4.4}, // L2 position
       {3, 0, 60.62}, // L3 position
       {4, 67.1415, 65.144} // L4 position
@@ -181,7 +181,7 @@ public final class Constants {
       public static final int driveMotorID = 3;
       public static final int angleMotorID = 4;
       public static final int canCoderID = 20;
-      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(204.2578);
+      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(206.455);
       public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
     }
         

@@ -41,6 +41,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     private final ProfiledPIDController elevatorController = new ProfiledPIDController(0.8, 0, 0, new TrapezoidProfile.Constraints(140, 800));
     private final ElevatorFeedforward elevatorFeedforward = new ElevatorFeedforward(.081, .254, 1, .01); // to be used in the future hopefully
 
+    private boolean manual;
+
 
     // assigning the limit switches
     private final DigitalInput minElevatorLimit = new DigitalInput(8);
@@ -63,6 +65,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     
     LeftResistance = false;
     RightResistance = false; 
+
+    manual = false;
 
     rightSparkMaxConfig.follow(leftElevator, true);
     // sets the right elevator motor to actually be configured to the code that sets the configuration
@@ -117,6 +121,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
     else {
       leftElevator.set(speed);
+      manual = true;
     }
   }
 
@@ -126,12 +131,12 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   public void setElevatorTarget(double target) {
     elevatorController.setGoal(target);
-    // leftElevator.setVoltage(elevatorFeedforward.calculate(elevatorController.getSetpoint().velocity));
-    leftElevator.setVoltage(elevatorController.calculate(leftEncoder.getPosition()) + 0.2);
-  }
+    manual = false;
 
-  public void setFeedForward() {
-    leftElevator.set(0.254);
+    // leftElevator.setVoltage(elevatorController.calculate(leftEncoder.getPosition()) + 0.2);
+
+    SmartDashboard.putNumber("Elevator Target", target);
+    // leftElevator.setVoltage(elevatorFeedforward.calculate(elevatorController.getSetpoint().velocity));
   }
 
   public Boolean elevatorAtPosition() {
@@ -142,8 +147,6 @@ public class ElevatorSubsystem extends SubsystemBase {
     // gets elevator position based on number of rotations of duty cycle encoder
     return leftEncoder.getPosition();
   }
-
-
 
   public boolean getMaxElevatorLimit() {
     // checks if maximum limit switch is hit
@@ -173,6 +176,10 @@ public class ElevatorSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Elevator Speed", leftEncoder.getVelocity());
     SmartDashboard.putNumber("Elevator Voltage", leftElevator.getAppliedOutput()*RobotController.getBatteryVoltage());
     SmartDashboard.putBoolean("Elevator At Target", elevatorAtPosition());
+    if (!manual) {
+      leftElevator.setVoltage(elevatorController.calculate(leftEncoder.getPosition()) + 0.2);
+    }
+
   }
 
   

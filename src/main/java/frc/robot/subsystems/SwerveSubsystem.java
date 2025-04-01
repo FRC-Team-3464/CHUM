@@ -78,8 +78,8 @@ public class SwerveSubsystem extends SubsystemBase {
             this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
             (speeds, feedforwards) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
             new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-                    new PIDConstants(3.0, 0.0, 0.0), // Translation PID constants
-                    new PIDConstants(2.0, 0.0, 0.0) // Rotation PID constants
+                    new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+                    new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
             ),
             config, // The robot configuration
             () -> {
@@ -88,8 +88,9 @@ public class SwerveSubsystem extends SubsystemBase {
               // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
               var alliance = DriverStation.getAlliance();
+
               if (alliance.isPresent()) {
-                return alliance.get() == DriverStation.Alliance.Red;
+                return !(alliance.get() == DriverStation.Alliance.Red);
               }
               return false;
             },
@@ -152,9 +153,13 @@ public class SwerveSubsystem extends SubsystemBase {
     gyro.setAngleAdjustment(angle);
   }
 
+  // public void driveRobotRelative(ChassisSpeeds speeds) {
+  //   SwerveModuleState[] swerveModuleStates = Constants.SwerveConstants.swerveKinematics.toSwerveModuleStates(speeds);
+  //   setModuleStates(swerveModuleStates);
+  // }
+
   public void driveRobotRelative(ChassisSpeeds speeds) {
-    SwerveModuleState[] swerveModuleStates = Constants.SwerveConstants.swerveKinematics.toSwerveModuleStates(speeds);
-    setModuleStates(swerveModuleStates);
+    drive(new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond),speeds.omegaRadiansPerSecond, false, true);
   }
 
   public Pose2d getPose() {

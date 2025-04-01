@@ -59,6 +59,7 @@ public class ArmevatorToPosition extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    System.out.println("command ended");
   }
 
   // Returns true when the command should end.
@@ -68,10 +69,10 @@ public class ArmevatorToPosition extends Command {
     // if (elevatorSub.elevatorAtPosition() && armSub.armAtPosition()) {
     //   return true;
     // }
-    // return timer.hasElapsed(2);
-
 
     // return false;
-    return (elevatorSub.elevatorAtPosition() && armSub.armAtPosition());
+    return (elevatorSub.elevatorAtPosition() && armSub.armAtPosition()) || timer.hasElapsed(1.5);
+    // return (elevatorSub.elevatorAtPosition() && armSub.armAtPosition());
+
   }
 }

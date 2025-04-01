@@ -29,7 +29,6 @@ public class VisionSubsystem extends SubsystemBase {
 
   public final PhotonCamera frontAprilCamera;
   // public final PhotonCamera backAprilCamera;
-  public final PhotonCamera algaeCamera;
 
   private final PhotonPoseEstimator photonPoseEstimatorFront;
   // private final PhotonPoseEstimator photonPoseEstimatorBack;
@@ -42,16 +41,15 @@ public class VisionSubsystem extends SubsystemBase {
     new Translation3d(Units.inchesToMeters(0), Units.inchesToMeters(0), Units.inchesToMeters(0)),
     new Rotation3d(Units.degreesToRadians(0), Units.degreesToRadians(0), Units.degreesToRadians(0)));
 
-  public final AprilTagFieldLayout aprilTagFieldLayout;
+  public final AprilTagFieldLayout fieldLayout;
 
   public VisionSubsystem() {
-    aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
+    fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 
     frontAprilCamera = new PhotonCamera("Front April Camera");
     // backAprilCamera = new PhotonCamera("Back April Camera");
-    algaeCamera = new PhotonCamera("Algae Camera");
 
-    photonPoseEstimatorFront = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, frontCameraTransform);
+    photonPoseEstimatorFront = new PhotonPoseEstimator(fieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, frontCameraTransform);
     // photonPoseEstimatorBack = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, backCameraTransform);
 
     photonPoseEstimatorFront.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
@@ -66,9 +64,6 @@ public class VisionSubsystem extends SubsystemBase {
     return instance;
   }
 
-  public PhotonCamera getAlgaeCamera() {
-    return algaeCamera;
-  }
 
   public PhotonCamera getFrontCamera() {
     return frontAprilCamera;
@@ -78,21 +73,27 @@ public class VisionSubsystem extends SubsystemBase {
     return frontCameraTransform;
   }
 
+  public Pose2d getRobotToTagTransform(boolean right, int Id) { 
+    Pose2d tagPose = fieldLayout.getTagPose(Id).get().toPose2d();
+    Pose2d robotPose = SwerveSubsystem.getInstance().getPose();
+    return robotPose.relativeTo(tagPose);
+
+  }
+
 
 
   public void addVisionMeasurement(PhotonPoseEstimator photonPoseEstimator, PhotonCamera photonCamera) {
-    var results = photonCamera.getAllUnreadResults();
 
-    Optional<EstimatedRobotPose> result = photonPoseEstimator.update(results.get(results.size() - 1));
-    if (!result.isPresent()) {
-      return;
+    Optional<EstimatedRobotPose> visionEst = Optional.empty();
+
+    for (var change : photonCamera.getAllUnreadResults()) {
+      visionEst = photonPoseEstimator.update(change);
     }
+    double timestampSeconds = visionEst.get().timestampSeconds;
 
-    EstimatedRobotPose robotPose = result.get();
-    Pose2d estimatedRobotPose2d = robotPose.estimatedPose.toPose2d();
-    double timestampSeconds = result.get().timestampSeconds;
-    SwerveSubsystem.getInstance().addVisionMeasurement(estimatedRobotPose2d, timestampSeconds);
+    SwerveSubsystem.getInstance().addVisionMeasurement(visionEst.get().estimatedPose.toPose2d(), timestampSeconds);
   }
+  
 
 
   @Override
