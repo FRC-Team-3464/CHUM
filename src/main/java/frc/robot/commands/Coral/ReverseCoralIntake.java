@@ -52,7 +52,7 @@ public class ReverseCoralIntake extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    // elevatorSub.runElevator(0);
+    elevatorSub.runElevator(0);
     coralSub.runIntake(0);
   }
 

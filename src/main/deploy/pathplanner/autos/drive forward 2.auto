@@ -7,7 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "RBFR to Right feeder"
+            "pathName": "forwards"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "forwards)"
           }
         }
       ]

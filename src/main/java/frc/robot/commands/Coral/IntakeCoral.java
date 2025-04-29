@@ -54,7 +54,8 @@ public class IntakeCoral extends Command {
 
     // speed = speedsMap.get(SwerveConstants.targetPosition);
     // System.out.println(SwerveConstants.targetPosition);
-    coralSub.runIntake(-0.5);
+    speed = SwerveConstants.targetPosition == 4 ? -0.2 : -0.5;
+    coralSub.runIntake(speed);
     if (coralSub.getPhotoElectric()) {
       timer.start();
     }

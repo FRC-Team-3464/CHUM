@@ -16,6 +16,8 @@ public class CrabWalk extends Command {
   /** Creates a new DampenSwerve. */
   private double direction;
   private final SwerveSubsystem swerveSub;
+  private Translation2d translation;
+
   public CrabWalk(double direction) {
     this.direction = direction;
     swerveSub = SwerveSubsystem.getInstance();
@@ -23,12 +25,17 @@ public class CrabWalk extends Command {
 
     // Use addRequirements() here to declare subsystem dependencies.
   }
-
+  // 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    System.out.println(direction);
+  }
+
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {
     if (direction == 0) {
+
       swerveSub.drive(new Translation2d(0.5, 0), 0, false, true);
     }
     if (direction == 90) {
@@ -41,10 +48,6 @@ public class CrabWalk extends Command {
       swerveSub.drive(new Translation2d(0, 0.4), 0, false, true);
     }
   }
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override

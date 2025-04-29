@@ -12,7 +12,6 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -58,11 +57,14 @@ public class AutoAlignReef extends Command {
   private double yspeed = 0;
   private double rotationSpeed = 0;
 
+  private static final TrapezoidProfile.Constraints X_CONSTRAINTS = new TrapezoidProfile.Constraints(5, 5);
+  private static final TrapezoidProfile.Constraints Y_CONSTRAINTS = new TrapezoidProfile.Constraints(5, 5);
+  private static final TrapezoidProfile.Constraints THETA_CONSTRAINTS = new TrapezoidProfile.Constraints(3, 3);
 
-  private final PIDController xController = new PIDController(3, 0, 0);
-  private final PIDController yController = new PIDController(3, 0, 0);
-  private final PIDController thetaController = new PIDController(3, 0, 0);
- 
+  private final ProfiledPIDController xController = new ProfiledPIDController(7, 0, 0, X_CONSTRAINTS);
+  private final ProfiledPIDController yController = new ProfiledPIDController(7, 0, 0.4, Y_CONSTRAINTS);
+  private final ProfiledPIDController thetaController = new ProfiledPIDController(3, 0, 0, THETA_CONSTRAINTS);
+
   private Transform2d TAG_TO_GOAL = new Transform2d();
 
   private double yOffset;
@@ -75,8 +77,6 @@ public class AutoAlignReef extends Command {
 
   private PhotonTrackedTarget lastTarget;
 
-  private boolean right;
-
   private final Timer timer = new Timer();
 
   private final PhotonCamera photonCamera;
@@ -86,11 +86,11 @@ public class AutoAlignReef extends Command {
     photonCamera = visionSub.getFrontCamera();
 
     yOffset = side ? Units.inchesToMeters(7) : Units.inchesToMeters(-4.5);
-    right = side;
 
-    xController.setTolerance(0.02);
-    yController.setTolerance(0.02);
-    thetaController.setTolerance(Units.degreesToRadians(1));
+    xController.setTolerance(0.2);
+    yController.setTolerance(0.2);
+    thetaController.setTolerance(Units.degreesToRadians(0.5));
+    thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
     TAG_TO_GOAL = 
       new Transform2d(
@@ -107,13 +107,9 @@ public class AutoAlignReef extends Command {
   public void initialize() {
     lastTarget = null;
     var robotPose = swerveSub.getPose();
-
-    xController.setSetpoint(0.5);
-    yController.setSetpoint(yOffset);
-    thetaController.setSetpoint(0);
-    // xController.reset(robotPose.getX());
-    // yController.reset(robotPose.getY());
-    // thetaController.reset(robotPose.getRotation().getRadians());
+    xController.reset(robotPose.getX());
+    yController.reset(robotPose.getY());
+    thetaController.reset(robotPose.getRotation().getRadians());
 
     timer.reset();
     timer.start();
@@ -137,11 +133,11 @@ public class AutoAlignReef extends Command {
 
         if (targetOpt.isPresent()) {
           // swerveSub.offsetGyro(gyroOffsets.get(targetOpt.get().getFiducialId()));
-          // System.out.println(gyroOffsets.get(targetOpt.get().getFiducialId()));
+          System.out.println(gyroOffsets.get(targetOpt.get().getFiducialId()));
 
           var target = targetOpt.get();
           lastTarget = target;
-  
+
           var camToTarget = target.getBestCameraToTarget();
           var cameraPose = robotPose.transformBy(ROBOT_TO_CAMERA);
 
@@ -149,31 +145,54 @@ public class AutoAlignReef extends Command {
 
           var goalPose = targetPose.transformBy(TAG_TO_GOAL);
 
-          // var goalPoseNew = new Pose2d(camToTarget.getX() + robotPose.getX() - TAG_TO_GOAL.getX(), camToTarget.getY() + robotPose.getY() - yOffset, new Rotation2d(0));
+          var goalPoseNew = new Pose2d(camToTarget.getX() + robotPose.getX() - TAG_TO_GOAL.getX(), camToTarget.getY() + robotPose.getY() - yOffset, new Rotation2d(0));
 
-          var goalPoseNew = visionSub.getRobotToTagTransform(right, targetOpt.get().fiducialId);
 
           // System.out.println(target.getBestCameraToTarget());
           System.out.println("goal: " + goalPose);
+          // System.out.println("current pose: " + swerveSub.getPose());
+          xController.setGoal(goalPoseNew.getX());
+          yController.setGoal(goalPoseNew.getY());
+          thetaController.setGoal(goalPose.getRotation().getRadians());   
 
-          var xSpeed = xController.calculate(robotPose.getX(), goalPoseNew.getX());
-          var ySpeed = yController.calculate(robotPose.getY(), goalPoseNew.getY());
-          var thetaSpeed = thetaController.calculate(robotPose.getRotation().getRadians(), goalPoseNew.getRotation().getRadians());
-
-          swerveSub.drive(new Translation2d(xSpeed, ySpeed), thetaSpeed, false, false);
-
+          // if (right) {
+          //   yspeed = target.getBestCameraToTarget().getY() < (Units.inchesToMeters(4.5)) ? 0.3 : 0;
+          // }
+          // else {
+          //   yspeed = target.getBestCameraToTarget().getY() > (Units.inchesToMeters(-4)) ? -0.3 : 0;
+          // }
+          // if (target.getBestCameraToTarget().getRotation().getAngle() < 0) {
+          //   rotationSpeed = 0.2;
+          // }
+          // if (target.getBestCameraToTarget().getRotation().getAngle() > 0) {
+          //   rotationSpeed = -0.2;
+          // }
+          // else {
+          //   rotationSpeed = 0;
+          // }
+          // swerveSub.drive(new Translation2d(0, yspeed), rotationSpeed, false, true);
         }
       }
     }
-    
-    
+    if (lastTarget == null) {
+      swerveSub.drive(new Translation2d(0, 0), 0, false, true);
+    }
+    else {
+      var xSpeed = xController.atGoal() ? 0 : xController.calculate(robotPose.getX());
+      var ySpeed = yController.atGoal() ? 0 : yController.calculate(robotPose.getY());
+      var thetaSpeed = thetaController.atGoal() ? 0 : thetaController.calculate(robotPose.getRotation().getRadians());
+
+      swerveSub.drive(new Translation2d(xSpeed, ySpeed), thetaSpeed, false, false);
+    }
+
   }
-  
+
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     swerveSub.drive(new Translation2d(0, 0), 0, false, true);
+    // swerveSub.offsetGyro(0);
     System.out.println("goal reached");
   }
 
@@ -184,7 +203,7 @@ public class AutoAlignReef extends Command {
       System.out.println("absolutely nothing in sight, look somewhere else");
       return true;
     }
-    if (xController.atSetpoint() && yController.atSetpoint()) {
+    if (xController.atGoal() && yController.atGoal()) {
       return true;
     }
     return false;

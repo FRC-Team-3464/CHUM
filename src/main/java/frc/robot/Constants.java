@@ -45,6 +45,13 @@ public final class Constants {
       {4, 67.1415, 65.144} // L4 position
     };
 
+    public static double[][] absPositions  = {
+      {0, 0, 18.01}, // stowed position
+      {1, 22.7, 14.39}, // intake position 3.714
+      {2, 33.666, 21.51}, // L2 position
+      {3, 0, 75.85}, // L3 position
+      {4, 67.1415, 80.83} // L4 position
+    };
     public static double kElevatorDangerPosition = 25;
     public static double kArmDangerPosition = 3.714;
   }
@@ -116,7 +123,7 @@ public final class Constants {
 
     /* Drive Motor PID Values */
 
-    public static final double driveKP = 0.01; 
+    public static final double driveKP = 0.5; 
     public static final double driveKI = 0.0;
     public static final double driveKD = 0.0;
 

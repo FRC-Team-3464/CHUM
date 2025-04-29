@@ -90,7 +90,7 @@ public class SwerveSubsystem extends SubsystemBase {
               var alliance = DriverStation.getAlliance();
 
               if (alliance.isPresent()) {
-                return !(alliance.get() == DriverStation.Alliance.Red);
+                return alliance.get() == DriverStation.Alliance.Red;
               }
               return false;
             },
@@ -153,14 +153,12 @@ public class SwerveSubsystem extends SubsystemBase {
     gyro.setAngleAdjustment(angle);
   }
 
-  // public void driveRobotRelative(ChassisSpeeds speeds) {
-  //   SwerveModuleState[] swerveModuleStates = Constants.SwerveConstants.swerveKinematics.toSwerveModuleStates(speeds);
-  //   setModuleStates(swerveModuleStates);
-  // }
-
   public void driveRobotRelative(ChassisSpeeds speeds) {
-    drive(new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond),speeds.omegaRadiansPerSecond, false, true);
+    SwerveModuleState[] swerveModuleStates = Constants.SwerveConstants.swerveKinematics.toSwerveModuleStates(speeds);
+    setModuleStates(swerveModuleStates);
   }
+
+
 
   public Pose2d getPose() {
     return poseEstimator.getEstimatedPosition();
