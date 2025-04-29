@@ -63,7 +63,7 @@ public class SwerveCommand extends Command {
     // translation strafe
   }
 
-  // Called once the command ends or is interrupted.
+  // Called once the command ends or is .
   @Override
   public void end(boolean interrupted) {
     swerveSub.drive(new Translation2d(0, 0), 0, robotCentricSup.getAsBoolean(), true);

@@ -19,10 +19,14 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ArmevatorConstants;
 
 public class ArmSubsystem extends SubsystemBase {
   /** Creates a new ArmSubsystem. */
@@ -35,7 +39,8 @@ public class ArmSubsystem extends SubsystemBase {
 
   private boolean manual;
 
-  private final ProfiledPIDController armController = new ProfiledPIDController(0.9, 0, 0, new TrapezoidProfile.Constraints(140, 300));
+
+  private final ProfiledPIDController armController = new ProfiledPIDController(1.3, 0, 0.05, new TrapezoidProfile.Constraints(700, 500));
   private final ArmFeedforward armFeedforward = new ArmFeedforward(0, 0, 0, 0);
 
   private final RelativeEncoder leftEncoder = leftMotor.getEncoder();
@@ -47,12 +52,13 @@ public class ArmSubsystem extends SubsystemBase {
   private SparkMaxConfig rightMotorConfig;
   private SparkMaxConfig leftMotorConfig;
 
+  public DoubleLogEntry doubleLog;
+
   public ArmSubsystem() {
-    armController.setTolerance(.1);
+    armController.setTolerance(1);
 
     leftMotorConfig = new SparkMaxConfig();
-    leftMotorConfig.absoluteEncoder.zeroOffset(0);
-    leftMotorConfig.absoluteEncoder.positionConversionFactor(160);
+    leftMotorConfig.absoluteEncoder.positionConversionFactor(162.14);
     leftMotorConfig.absoluteEncoder.inverted(true);
     leftMotor.configure(leftMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
@@ -60,6 +66,11 @@ public class ArmSubsystem extends SubsystemBase {
     rightMotorConfig.follow(11, true);
     rightMotor.configure(rightMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);   
     leftEncoder.setPosition(0);
+
+    DataLogManager.start();
+    DataLog log = DataLogManager.getLog();
+    doubleLog = new DoubleLogEntry(log, "arm current");
+
   }
 
   public static ArmSubsystem getInstance() {
@@ -113,6 +124,7 @@ public class ArmSubsystem extends SubsystemBase {
   public void setArmTarget(double target) {
     manual = false;
     armController.setGoal(target);
+
     // double voltage = armController.calculate(getRelativeArmPosition());
     // if (getAbsArmPosition() > 90 && voltage > 0) {
     //   leftMotor.set(0);
@@ -164,9 +176,15 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("Arm Max Limit", getMaxArmLimit());
     SmartDashboard.putBoolean("Arm Min Limit", getMinArmLimit());
     SmartDashboard.putNumber("Abs Encoder Degrees", getAbsArmPosition());
+    SmartDashboard.putNumber("Arm Motor Draw", leftMotor.getOutputCurrent());
     // SmartDashboard.putNumber("Arm Setpoint", moveToPosition());
     if (!manual) {
       leftMotor.setVoltage(armController.calculate(getRelativeArmPosition()));
     }
+
+    doubleLog.append(leftMotor.getOutputCurrent());
+    // if (!manual) {
+    //   leftMotor.setVoltage(armController.calculate(getRelativeArmPosition()));
+    // }
   }
 }

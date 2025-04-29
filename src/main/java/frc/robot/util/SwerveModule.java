@@ -212,6 +212,7 @@ public class SwerveModule {
         driveMotorConfiguration.ClosedLoopRamps.DutyCycleClosedLoopRampPeriod = SwerveConstants.closedLoopRamp;
         driveMotorConfiguration.MotorOutput.Inverted = SwerveConstants.driveMotorInvert;
         driveMotorConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        driveMotorConfiguration.Feedback.SensorToMechanismRatio = SwerveConstants.driveGearRatio;
 
         driveMotorConfigurator.apply(driveMotorConfiguration);
         driveMotorConfigurator.apply(driveSupplyLimit);

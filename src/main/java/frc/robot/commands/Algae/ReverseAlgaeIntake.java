@@ -36,6 +36,7 @@ public class ReverseAlgaeIntake extends Command {
   @Override
   public void execute() {
     algaeSub.runAlgaeMotor(-0.3);
+    algaeSub.runPivotMotorSimple(-0.2);
     // if (algaeSub.getAlgaeSpeed() <= -1600) {
     //   targetReached = true;
     // }
@@ -54,6 +55,7 @@ public class ReverseAlgaeIntake extends Command {
   @Override
   public void end(boolean interrupted) {
     algaeSub.runAlgaeMotor(0);
+    algaeSub.runPivotMotorSimple(0);
   }
 
   // Returns true when the command should end.

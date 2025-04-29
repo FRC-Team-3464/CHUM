@@ -38,7 +38,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     private final RelativeEncoder leftEncoder = leftElevator.getEncoder();
     private final RelativeEncoder rightEncoder = rightElevator.getEncoder();
 
-    private final ProfiledPIDController elevatorController = new ProfiledPIDController(0.8, 0, 0, new TrapezoidProfile.Constraints(140, 800));
+    private final ProfiledPIDController elevatorController = new ProfiledPIDController(0.9, 0, 0, new TrapezoidProfile.Constraints(150, 800));
     private final ElevatorFeedforward elevatorFeedforward = new ElevatorFeedforward(.081, .254, 1, .01); // to be used in the future hopefully
 
     private boolean manual;
@@ -169,7 +169,7 @@ public class ElevatorSubsystem extends SubsystemBase {
       leftEncoder.setPosition(81);
     }
     if (getElevatorPosition() >= 81) {
-      runElevator(0.02);
+      runElevator(0);
     }
     SmartDashboard.putNumber("Elevator Draw", leftElevator.getOutputCurrent());
     // This method will be called once per scheduler run

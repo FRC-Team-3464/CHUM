@@ -49,6 +49,9 @@ public class ArmevatorToPosition extends Command {
     //   armSub.setArmTarget(ArmevatorConstants.positions[target][2]);
     // }
     // else {
+      // elevatorSub.setElevatorTarget(ArmevatorConstants.absPositions[target][1]);
+      // armSub.setArmTarget(ArmevatorConstants.absPositions[target][2]);
+
       elevatorSub.setElevatorTarget(ArmevatorConstants.positions[target][1]);
       armSub.setArmTarget(ArmevatorConstants.positions[target][2]);
     // }

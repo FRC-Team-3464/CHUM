@@ -27,7 +27,8 @@ public class DeployAlgaeIntake extends Command {
   @Override
   public void execute() {
     // algaeSub.DeployAlgaeIntake();
-    algaeSub.runPivotMotorSimple(-0.3);
+  algaeSub.runPivotMotorSimple(-0.3);
+  
   }
 
   // Called once the command ends or is interrupted.
