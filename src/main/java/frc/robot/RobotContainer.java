@@ -4,7 +4,34 @@
 
 package frc.robot;
 
+
+import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.Autos;
+import frc.robot.commands.BenPeiLEDCommand;
+import frc.robot.commands.BluGrenConGradientLEDCommand;
+import frc.robot.commands.BlueLEDCommand;
+import frc.robot.commands.BlueVioletLEDCommand;
+import frc.robot.commands.ClimbersLEDCommand;
+import frc.robot.commands.DenimLEDCommand;
+import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.FunEffectLEDCommand;
+import frc.robot.commands.GhostWhiteLEDCommand;
+import frc.robot.commands.GoldLEDCommand;
+import frc.robot.commands.GreenLEDCommand;
+import frc.robot.commands.IntakeLEDCommand;
+import frc.robot.commands.OrangeLEDCommand;
+import frc.robot.commands.RainbowLEDCommand;
+import frc.robot.commands.RedBluNonContGradLEDCommand;
+import frc.robot.commands.RedLEDCommand;
+import frc.robot.commands.WarningPulseLEDCommand;
+import frc.robot.commands.ClimbersLEDCommand;
+import frc.robot.commands.YelRedConGradientLEDCommand;
+import frc.robot.commands.SwerveCommand;
+import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.LEDSubsystem;
+import frc.robot.subsystems.SwerveSubsystem;
 import java.lang.management.OperatingSystemMXBean;
+
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -15,6 +42,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
@@ -54,7 +82,7 @@ public class RobotContainer {
   private final SwerveSubsystem swerveSub = SwerveSubsystem.getInstance();
 
   
-    private final SendableChooser<Command> autoChooser;
+  private final SendableChooser<Command> autoChooser;
 
 
 
@@ -234,5 +262,6 @@ public class RobotContainer {
     // return autoChooser.getSelected();
 
     // return Autos.exampleAuto(exampleSubsystem);
+    // return null;
   }
 }
