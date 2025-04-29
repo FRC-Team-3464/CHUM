@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.BenPeiLEDCommand;
@@ -29,16 +30,46 @@ import frc.robot.commands.SwerveCommand;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
+import java.lang.management.OperatingSystemMXBean;
+
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.DriveForwardAuto;
+import frc.robot.commands.Algae.DeployAlgaeIntake;
+import frc.robot.commands.Algae.RetractAlgaeIntake;
+import frc.robot.commands.Algae.ReverseAlgaeIntake;
+import frc.robot.commands.Algae.RunAlgaeIntake;
+import frc.robot.commands.Armevator.ArmToPosition;
+import frc.robot.commands.Armevator.ArmevatorToPosition;
+import frc.robot.commands.Armevator.ElevatorToPosition;
+import frc.robot.commands.Armevator.RunArm;
+import frc.robot.commands.Armevator.RunElevator;
+import frc.robot.commands.Coral.IntakeCoral;
+import frc.robot.commands.Coral.ReverseCoralIntake;
+import frc.robot.commands.Swerve.AutoAlignReef;
+import frc.robot.commands.Swerve.AutoPosition;
+import frc.robot.commands.Swerve.CrabWalk;
+import frc.robot.commands.Swerve.SwerveCommand;
+import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.SwerveSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -50,12 +81,8 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem swerveSub = SwerveSubsystem.getInstance();
 
-  // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
   
   private final SendableChooser<Command> autoChooser;
-
 
 
 
@@ -66,8 +93,21 @@ public class RobotContainer {
         () -> Constants.OperatorConstants.xbox.getRawAxis(XboxController.Axis.kLeftY.value),
         () -> Constants.OperatorConstants.xbox.getRawAxis(XboxController.Axis.kLeftX.value), 
         () -> OperatorConstants.xbox.getRawAxis(XboxController.Axis.kRightX.value), 
-        () -> false)
+        () -> true) //!OperatorConstants.xbox.getYButton()
     );
+
+    NamedCommands.registerCommand("Armevator0", new ArmevatorToPosition(0));
+    NamedCommands.registerCommand("ArmevatorIntake", new ArmevatorToPosition(1));
+    NamedCommands.registerCommand("ArmevatorL2", new ArmevatorToPosition(2));
+    NamedCommands.registerCommand("ArmevatorL3", new ArmevatorToPosition(3));
+    NamedCommands.registerCommand("ArmevatorL4", new ArmevatorToPosition(4));
+
+    NamedCommands.registerCommand("ElevatorUp", new RunElevator(true));
+
+    NamedCommands.registerCommand("CoralEject", new ReverseCoralIntake());
+    NamedCommands.registerCommand("CoralPickup", new IntakeCoral());
+  
+
 
     autoChooser = AutoBuilder.buildAutoChooser();
 
@@ -87,25 +127,50 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-  
-    Constants.OperatorConstants.button1.whileTrue(new RainbowLEDCommand());
-    Constants.OperatorConstants.button2.whileTrue(new GhostWhiteLEDCommand());
-    Constants.OperatorConstants.button3.whileTrue(new IntakeLEDCommand());
-    Constants.OperatorConstants.button4.whileTrue(new WarningPulseLEDCommand());
-    Constants.OperatorConstants.button5.whileTrue(new ClimbersLEDCommand());
-    Constants.OperatorConstants.button6.whileTrue(new FunEffectLEDCommand());
-    Constants.OperatorConstants.button7.whileTrue(new BenPeiLEDCommand());
-    Constants.OperatorConstants.button8.whileTrue(new RedBluNonContGradLEDCommand());
-    Constants.OperatorConstants.button9.whileTrue(new DenimLEDCommand());
-    Constants.OperatorConstants.button10.whileTrue(new BluGrenConGradientLEDCommand());
-    Constants.OperatorConstants.button11.whileTrue(new GoldLEDCommand());
-    Constants.OperatorConstants.button12.whileTrue(new YelRedConGradientLEDCommand());
+    Constants.OperatorConstants.pancakeUp.whileTrue(new RunElevator(true));
+    Constants.OperatorConstants.pancakeDown.whileTrue(new RunElevator(false));
 
-    // Constants.OperatorConstants.button2.whileTrue(new InstantCommand(LEDSubsystem.getInstance() :: greenLED, LEDSubsystem.getInstance()));
+    Constants.OperatorConstants.buttonRB.whileTrue(new AutoAlignReef(true));
+    Constants.OperatorConstants.buttonLB.whileTrue(new AutoAlignReef(false));
+
+    Constants.OperatorConstants.buttonX.onTrue(new InstantCommand(() -> swerveSub.resetGyro()));
+    // Constants.OperatorConstants.buttonA.whileTrue(new AutoPosition());
+
+    
+
+    Constants.OperatorConstants.pancakeLeft.whileTrue(new RunArm(false));
+    Constants.OperatorConstants.pancakeRight.whileTrue(new RunArm(true));
+
+    Constants.OperatorConstants.button1.whileTrue(new IntakeCoral());
+    Constants.OperatorConstants.button2.whileTrue(new ReverseCoralIntake());
+
+    Constants.OperatorConstants.dPadUp.whileTrue(new CrabWalk(0));
+    Constants.OperatorConstants.dPadRight.whileTrue(new CrabWalk(90));
+    Constants.OperatorConstants.dPadDown.whileTrue(new CrabWalk(180));
+    Constants.OperatorConstants.dPadLeft.whileTrue(new CrabWalk(270));
+
+    OperatorConstants.button7.onTrue(new ArmevatorToPosition(0));
+    OperatorConstants.button8.onTrue(new ArmevatorToPosition(1));
+    OperatorConstants.button9.onTrue(new ArmevatorToPosition(2));
+    OperatorConstants.button10.onTrue(new ArmevatorToPosition(3));
+    OperatorConstants.button11.onTrue(new ArmevatorToPosition(4));
+
+    OperatorConstants.button12.onTrue(new InstantCommand(() -> ArmSubsystem.getInstance().setArmEncoderPosition(0)));
+    
+    OperatorConstants.button4.whileTrue(new DeployAlgaeIntake());
+    OperatorConstants.button3.whileTrue(new RetractAlgaeIntake());
+    
+    OperatorConstants.button6.whileTrue(new RunAlgaeIntake());
+    OperatorConstants.button5.whileTrue(new ReverseAlgaeIntake());
+
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
-  }
+
+      }
+    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
+
+  
+
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -114,8 +179,88 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
+    // return null;
 
     return autoChooser.getSelected();
+// drive back auto
+    // return new ParallelRaceGroup(
+    //   new WaitCommand(2),
+    //   new SwerveCommand(
+    //     () -> 0.15, 
+    //     () -> 0, 
+    //     () -> 0, 
+    //     () -> true)
+    // );
+
+    // center L4 auto without auto align:
+    
+    // return new SequentialCommandGroup (
+    //   new ParallelDeadlineGroup(
+    //     new WaitCommand(1.5), 
+    //     new ArmevatorToPosition(4)
+    //   ),
+    //   new ParallelRaceGroup(
+    //     new WaitCommand(2.2),
+    //     new SwerveCommand(
+    //       () -> -0.15,
+    //       () -> 0, 
+    //       () -> 0, 
+    //       () -> true)
+    //   ),
+    //   new ParallelDeadlineGroup(
+    //     new WaitCommand(1), 
+    //     new ReverseCoralIntake()
+    //   ),
+    //   new ParallelRaceGroup(
+    //     new WaitCommand(1.0),
+    //     new SwerveCommand(
+    //       () -> 0.15,
+    //       () -> 0, 
+    //       () -> 0,  
+    //       () -> true)
+    //   ),
+    //   new ParallelDeadlineGroup(
+    //     new WaitCommand(1.5), 
+    //     new ArmevatorToPosition(0)
+    //   )
+    // );
+
+    // center L4 auto with auto align:
+
+    // return new SequentialCommandGroup (
+    //   new ParallelDeadlineGroup(
+    //     new WaitCommand(1.5), 
+    //     new ArmevatorToPosition(4)
+    //   ),
+    //   new ParallelRaceGroup(
+    //     new WaitCommand(1),
+    //     new SwerveCommand(
+    //       () -> -0.15,
+    //       () -> 0, 
+    //       () -> 0, 
+    //       () -> true)
+    //   ),
+    //   new AutoAlignReef(true),
+    //   new ParallelDeadlineGroup(
+    //     new WaitCommand(1), 
+    //     new ReverseCoralIntake()
+    //   ),
+    //   new ParallelRaceGroup(
+    //     new WaitCommand(1.0),
+    //     new SwerveCommand(
+    //       () -> 0.15,
+    //       () -> 0, 
+    //       () -> 0,  
+    //       () -> true)
+    //   ),
+    //   new ParallelDeadlineGroup(
+    //     new WaitCommand(1.5), 
+    //     new ArmevatorToPosition(0)
+    //   )
+    // );
+    
+    // return autoChooser.getSelected();
+
     // return Autos.exampleAuto(exampleSubsystem);
     // return null;
   }

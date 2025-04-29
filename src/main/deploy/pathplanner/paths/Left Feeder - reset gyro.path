@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.3147971854304634,
+        "y": 7.104966887417219
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.5775273169569324,
+        "y": 6.839096180050598
+      },
+      "isLocked": false,
+      "linkedName": "left feeder"
+    },
+    {
+      "anchor": {
+        "x": 1.5617756622516559,
+        "y": 6.9161009933774835
+      },
+      "prevControl": {
+        "x": 1.3586427992687804,
+        "y": 7.061830331454551
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "reversed": false,
+  "folder": "wesley's folder",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -55.0
+  },
+  "useDefaultConstraints": true
+}
