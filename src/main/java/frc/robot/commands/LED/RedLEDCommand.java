@@ -2,16 +2,16 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.LED;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.LEDSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class GreenLEDCommand extends Command {
+public class RedLEDCommand extends Command {
   private LEDSubsystem LEDSub;
-  /** Creates a new RainbowLEDCommand. */
-  public GreenLEDCommand() {
+  /** Creates a new RedLEDCommand. */
+  public RedLEDCommand() {
     LEDSub = LEDSubsystem.getInstance();
     addRequirements(LEDSub);
 
@@ -25,12 +25,12 @@ public class GreenLEDCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // LEDSub.rainbowLED();
-    LEDSub.greenLED();
-    System.out.println("green LEDs should be running");
+    // LEDSub.redLED();
+    LEDSub.redLED();
+    System.out.println("red LEDs should be running");
   }
 
-  // Called once the command ends or is interrupted.
+  // Called once the command ends or is interrupted which will then turn the LED lights off.
   @Override
   public void end(boolean interrupted) {
     LEDSub.setOff();
