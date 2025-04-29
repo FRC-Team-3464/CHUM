@@ -4,9 +4,21 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Newton;
+
+import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator;
+
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.AprilTagAuto;
+
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -19,6 +31,24 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
+     // Vanessa 
+   private static final int FRONT_CAMERA = 1; 
+   private static final int BACK_CAMERA = 2; 
+
+   private AprilTagAuto aprilTagAuto;
+   
+   private final Timer timer = new Timer();
+   boolean autoFinished = false;
+  
+   // robotics path for AprilTag
+   // 1- to AprilTag branch; 2- to ArpilTag Coral station
+    int iStage = 1;
+   // branch: -1- left, 1-right
+   int iBranchPick = -1;
+
+
+    // END Vanessa
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -28,6 +58,7 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+
   }
 
   /**
@@ -56,17 +87,48 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
+  /*
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
+    */
+
+      timer.reset();
+      timer.start();
   }
 
   /** This function is called periodically during autonomous. */
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+       // Vanessa
+    while (timer.get()<15 && autoFinished == false)  {
+      System.out.println("time-"+timer.get());
+      aprilTagAuto.processAutoAccess(iStage, iBranchPick);
+
+      // switch camera after processing
+      if (iStage==FRONT_CAMERA) {
+        iStage=BACK_CAMERA;   
+      }
+      else if (iStage==BACK_CAMERA) { 
+        iStage = FRONT_CAMERA;
+      }
+  
+      // Add a delay to avoid busy-waiting
+      try {
+          Thread.sleep(100);
+      } catch (InterruptedException e) {
+          autoFinished = true;
+          System.out.println("autonomousPeriodic error");
+      }
+      // turn moter off
+      autoFinished = true;
+      // stop moters...
+    
+    }
+  }
 
   @Override
   public void teleopInit() {

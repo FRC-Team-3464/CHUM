@@ -28,10 +28,11 @@ public class VisionSubsystem extends SubsystemBase {
   public static VisionSubsystem instance;
 
   public final PhotonCamera frontAprilCamera;
-  // public final PhotonCamera backAprilCamera;
+  // add back camera- Vanessa
+  public final PhotonCamera backAprilCamera;
 
   private final PhotonPoseEstimator photonPoseEstimatorFront;
-  // private final PhotonPoseEstimator photonPoseEstimatorBack;
+  private final PhotonPoseEstimator photonPoseEstimatorBack;
 
   private final Transform3d frontCameraTransform = new Transform3d(
     new Translation3d(Units.inchesToMeters(-9), Units.inchesToMeters(2), Units.inchesToMeters(7)),
@@ -46,16 +47,18 @@ public class VisionSubsystem extends SubsystemBase {
   public VisionSubsystem() {
     fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 
-    frontAprilCamera = new PhotonCamera("Front April Camera");
-    // backAprilCamera = new PhotonCamera("Back April Camera");
-
+    frontAprilCamera = new PhotonCamera("FrontAprilCamera");
     photonPoseEstimatorFront = new PhotonPoseEstimator(fieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, frontCameraTransform);
-    // photonPoseEstimatorBack = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, backCameraTransform);
-
     photonPoseEstimatorFront.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
-    // photonPoseEstimatorBack.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
 
-  }
+
+    // Add back camera- Vanessa
+    backAprilCamera = new PhotonCamera("BackAprilCamera");
+    photonPoseEstimatorBack = new PhotonPoseEstimator(fieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, backCameraTransform);
+    photonPoseEstimatorBack.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+
+ }
+
 
   public static VisionSubsystem getInstance() {
     if (instance == null) {
@@ -72,6 +75,11 @@ public class VisionSubsystem extends SubsystemBase {
   public Transform3d getFrontRobotToCamera() {
     return frontCameraTransform;
   }
+
+  public PhotonCamera getBackCamera() {
+    return backAprilCamera;
+  }
+
 
   public Pose2d getRobotToTagTransform(boolean right, int Id) { 
     Pose2d tagPose = fieldLayout.getTagPose(Id).get().toPose2d();
