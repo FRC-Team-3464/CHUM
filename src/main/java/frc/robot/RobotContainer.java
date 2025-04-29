@@ -33,6 +33,8 @@ import frc.robot.commands.Armevator.ArmevatorToPosition;
 import frc.robot.commands.Armevator.ElevatorToPosition;
 import frc.robot.commands.Armevator.RunArm;
 import frc.robot.commands.Armevator.RunElevator;
+import frc.robot.commands.Climber.LowerClimber;
+import frc.robot.commands.Climber.RaiseClimber;
 import frc.robot.commands.Coral.IntakeCoral;
 import frc.robot.commands.Coral.ReverseCoralIntake;
 import frc.robot.commands.Swerve.AutoAlignReef;
@@ -129,11 +131,14 @@ public class RobotContainer {
 
     OperatorConstants.button12.onTrue(new InstantCommand(() -> ArmSubsystem.getInstance().setArmEncoderPosition(0)));
     
-    OperatorConstants.button4.whileTrue(new DeployAlgaeIntake());
-    OperatorConstants.button3.whileTrue(new RetractAlgaeIntake());
+    // OperatorConstants.button4.whileTrue(new DeployAlgaeIntake());
+    // OperatorConstants.button3.whileTrue(new RetractAlgaeIntake());
     
-    OperatorConstants.button6.whileTrue(new RunAlgaeIntake());
-    OperatorConstants.button5.whileTrue(new ReverseAlgaeIntake());
+    // OperatorConstants.button6.whileTrue(new RunAlgaeIntake());
+    // OperatorConstants.button5.whileTrue(new ReverseAlgaeIntake());
+
+    OperatorConstants.button4.whileTrue(new LowerClimber());
+    OperatorConstants.button3.whileTrue(new RaiseClimber());
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
