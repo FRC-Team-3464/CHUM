@@ -4,6 +4,8 @@
 
 package frc.robot.commands.LED;
 
+import edu.wpi.first.wpilibj.LEDPattern.GradientType;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.LEDSubsystem;
 
@@ -26,7 +28,7 @@ public class BluGrenConGradientLEDCommand extends Command {
   @Override
   public void execute() {
     // LEDSub.redLED();
-    LEDSub.blugrenConGradientLED();
+    LEDSub.gradientLED(GradientType.kContinuous, Color.kBlue, Color.kGreen);
     System.out.println("blugren LEDs should be running");
   }
 

@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.Centimeters;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Microseconds;
+import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Percent;
 import static edu.wpi.first.units.Units.Second;
 
@@ -58,6 +59,71 @@ public class LEDSubsystem extends SubsystemBase {
     off.applyTo(ledBuffer);
     ledStrip.setData(ledBuffer);
   }
+
+  // simplified methods that take parameters to create different LED effects
+  public void solidColor(Color color) {
+    LEDPattern pattern = LEDPattern.solid(color);
+    pattern.applyTo(ledBuffer);
+    ledStrip.setData(ledBuffer);
+  }
+
+  public void gradientLED(LEDPattern.GradientType ledpattern, Color color1, Color color2) {
+    // four score and fifty TRILLION years agoo... - aberhum something, 2024
+    // no but really all this does is make a gradient between gren and blu - ben frankin, 3024
+    LEDPattern gradient = LEDPattern.gradient(ledpattern, color1, color2);
+    gradient.applyTo(ledBuffer);
+    ledStrip.setData(ledBuffer);
+  }
+
+  public void intakePulse(Color color) {
+    LEDPattern base = LEDPattern.solid(color); 
+    LEDPattern pattern = base.breathe(Seconds.of(2));
+    pattern.applyTo(ledBuffer);
+    ledStrip.setData(ledBuffer);
+  }
+  
+  public void gradientPulse(LEDPattern.GradientType ledPattern, Color color1, Color color2) {
+  LEDPattern base = LEDPattern.gradient(ledPattern, color1, color2);
+  LEDPattern pattern = base.breathe(Seconds.of(2));
+  pattern.applyTo(ledBuffer);
+  ledStrip.setData(ledBuffer);
+  }
+  
+  public void solidBlink(Color color) {
+    LEDPattern base = LEDPattern.solid(color);
+    LEDPattern pattern = base.blink(Seconds.of(2));
+    pattern.applyTo(ledBuffer);
+    ledStrip.setData(ledBuffer);
+  }
+  
+  public void gradientBlink(LEDPattern.GradientType ledPattern, Color color1, Color color2) {
+  LEDPattern base = LEDPattern.gradient(ledPattern, color1, color2); 
+  LEDPattern pattern = base.blink(Seconds.of(2)); 
+  pattern.applyTo(ledBuffer); 
+  ledStrip.setData(ledBuffer);
+  }
+
+  public void solidScroll(Color color) {
+  Map<Double, Color> maskSteps = Map.of(0.0, Color.kWhite, 0.5, Color.kBlack);
+  LEDPattern base = LEDPattern.solid(color);
+  LEDPattern mask = 
+    LEDPattern.steps(maskSteps).scrollAtRelativeSpeed(Percent.per(Seconds).of(50));
+    LEDPattern pattern = base.mask(mask);
+    pattern.applyTo(ledBuffer);
+    ledStrip.setData(ledBuffer);
+  }
+
+  public void gradientScroll (LEDPattern.GradientType ledPattern, Color color1, Color color2) {
+  Map<Double, Color> maskSteps = Map.of(0.0, Color.kWhite, 0.5, Color.kBlack);
+  LEDPattern base = LEDPattern.gradient(ledPattern, color1, color2);
+  LEDPattern mask = 
+    LEDPattern.steps(maskSteps).scrollAtRelativeSpeed(Percent.per(Seconds).of(50));
+    LEDPattern pattern = base.mask(mask);
+    pattern.applyTo(ledBuffer);
+    ledStrip.setData(ledBuffer);
+  }
+
+
 
   public void redLED() {
     // basically this makes it red ahaha
@@ -134,14 +200,6 @@ public class LEDSubsystem extends SubsystemBase {
     ledStrip.setData(ledBuffer);
   }
  
-  public void blugrenConGradientLED () {
-    // four score and fifty TRILLION years agoo... - aberhum something, 2024
-    // no but really all this does is make a gradient between gren and blu - ben frankin, 3024
-    LEDPattern gradient = LEDPattern.gradient(LEDPattern.GradientType.kContinuous, Color.kGreen, Color.kBlue);
-    gradient.applyTo(ledBuffer);
-    ledStrip.setData(ledBuffer);
-  }
-
   public void yelredConGradientLED () {
     //oh my god... NOW THE'RE YELLOW AND RED?!?!?!?!?? SUCH INNOVATION!!!! 
     LEDPattern gradient = LEDPattern.gradient(LEDPattern.GradientType.kContinuous, Color.kYellow, Color.kRed);
@@ -173,6 +231,8 @@ public class LEDSubsystem extends SubsystemBase {
 // pattern.applyTo(ledBuffer);
 // ledStrip.setData(ledBuffer);
 // }
+
+
 
 // // This is line of code is for when the Robot encounters a issue, it blinks
 public void warningPulse(){
@@ -215,7 +275,7 @@ public void benPeiLED(){
   Map<Double, Color> maskSteps = Map.of(0.0, Color.kWhite, 0.25, Color.kBlack);
     LEDPattern red = LEDPattern.solid(Color.kRed);
     LEDPattern mask = 
-    LEDPattern.steps(maskSteps).scrollAtRelativeSpeed(Percent.per(Second).of(50));
+    LEDPattern.steps(maskSteps).scrollAtRelativeSpeed(Percent.per(Seconds).of(50));
     LEDPattern pattern = red.mask(mask);
     LEDPattern revPattern = pattern.reversed();
     double pos = ledBuffer.getRed(16);

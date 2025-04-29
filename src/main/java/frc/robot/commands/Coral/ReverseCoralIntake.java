@@ -10,12 +10,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.subsystems.CoralSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.LEDSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ReverseCoralIntake extends Command {
  
   private CoralSubsystem coralSub;
   private ElevatorSubsystem elevatorSub;
+  private LEDSubsystem ledSub;
 
   private double speed;
 
@@ -25,9 +27,11 @@ public class ReverseCoralIntake extends Command {
     // Use addRequirements() here to declare subsystem dependencies.
     coralSub = CoralSubsystem.getInstance();
     elevatorSub = ElevatorSubsystem.getInstance();
+    ledSub = LEDSubsystem.getInstance();
 
     addRequirements(elevatorSub);
     addRequirements(coralSub);
+    addRequirements(ledSub); 
   }
 
   // Called when the command is initially scheduled.
@@ -46,6 +50,8 @@ public class ReverseCoralIntake extends Command {
     }
 
     coralSub.runIntake(speed);
+    ledSub.redLED();
+    System.out.println("Red outtake LEDs should be running");
 
   }
 
@@ -54,6 +60,7 @@ public class ReverseCoralIntake extends Command {
   public void end(boolean interrupted) {
     // elevatorSub.runElevator(0);
     coralSub.runIntake(0);
+    ledSub.setOff(); 
   }
 
   // Returns true when the command should end.

@@ -8,16 +8,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.CoralSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.LEDSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class IntakeCoral extends Command {
 
   private CoralSubsystem coralSub;
+  private LEDSubsystem ledSub;
   private ElevatorSubsystem elevatorSub;
   private Timer timer;
   private double speed;
@@ -34,8 +37,10 @@ public class IntakeCoral extends Command {
   public IntakeCoral() {
     // Use addRequirements() here to declare subsystem dependencies.
     coralSub = CoralSubsystem.getInstance();
+    ledSub = LEDSubsystem.getInstance();
 
     addRequirements(coralSub);
+    addRequirements(ledSub);
 
     timer = new Timer();
   }
@@ -58,8 +63,9 @@ public class IntakeCoral extends Command {
     if (coralSub.getPhotoElectric()) {
       timer.start();
     }
-    
-    
+
+      ledSub.intakePulse(Color.kYellow);
+      System.out.println("Yellow intake LEDs should be running");
 
     // if(SwerveConstants.targetPosition == 4){
     //   coralSub.runIntake(speed);
@@ -76,6 +82,8 @@ public class IntakeCoral extends Command {
   @Override
   public void end(boolean interrupted) {
     coralSub.stopIntake();
+    ledSub.greenLED();
+    System.out.println("Green pick-up LEDs should be running");
   }
 
   // Returns true when the command should end.

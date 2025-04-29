@@ -4,6 +4,7 @@
 
 package frc.robot.commands.LED;
 
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.LEDSubsystem;
 
@@ -26,7 +27,7 @@ public class GoldLEDCommand extends Command {
   @Override
   public void execute() {
     // LEDSub.rainbowLED();
-    LEDSub.goldLED();
+    LEDSub.solidColor(Color.kGold);
     System.out.println("gold LEDs should be running");
   }
 
