@@ -12,7 +12,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class L1Subsystem extends SubsystemBase {
   /** Creates a new L1Subsystem. */
-  
+  public static L1Subsystem instance;
+
   private final SparkMax intakeMotor = new SparkMax(30, MotorType.kBrushless);
   private final SparkMax pivotingMotor = new SparkMax(31, MotorType.kBrushless);
 
@@ -24,6 +25,13 @@ public class L1Subsystem extends SubsystemBase {
 
     pivotingMotor.set(Variable);
 
+  }
+
+  public static L1Subsystem getInstance(){
+    if (instance == null){
+      instance = new L1Subsystem();
+    }
+    return instance;
   }
 
   public void PivotDown(double AnotherVariable){
