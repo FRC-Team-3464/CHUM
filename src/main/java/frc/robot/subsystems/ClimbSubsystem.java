@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class ClimbSubsystem extends SubsystemBase {
   /** Creates a new ClimbSubsystem. */
 
-  private final SparkMax comeOnAndSlamAndWelcomeToTheJam = new SparkMax(577345, MotorType.kBrushless);
+  private final SparkMax comeOnAndSlamAndWelcomeToTheJam = new SparkMax(42, MotorType.kBrushless);
 
   private final DigitalInput treatMeLikeYT = new DigitalInput(5); //top
   private final DigitalInput immaDriveToABurgerKing = new DigitalInput(6); //bottom
