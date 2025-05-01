@@ -23,10 +23,11 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.AprilTagAuto;
 import frc.robot.commands.DriveForwardAuto;
 import frc.robot.commands.Algae.DeployAlgaeIntake;
 import frc.robot.commands.Algae.RetractAlgaeIntake;
-import frc.robot.commands.Algae.ReverseAlgaeIntake;
+//import frc.robot.commands.Algae.ReverseAlgaeIntake;
 import frc.robot.commands.Algae.RunAlgaeIntake;
 import frc.robot.commands.Armevator.ArmToPosition;
 import frc.robot.commands.Armevator.ArmevatorToPosition;
@@ -42,6 +43,7 @@ import frc.robot.commands.Swerve.SwerveCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.commands.AprilTagAuto;;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -56,7 +58,7 @@ public class RobotContainer {
   
     private final SendableChooser<Command> autoChooser;
 
-
+    //private final AprilTagAuto autoAprilTag = ;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -144,7 +146,7 @@ public class RobotContainer {
     OperatorConstants.button3.whileTrue(new RetractAlgaeIntake());
     
     OperatorConstants.button6.whileTrue(new RunAlgaeIntake());
-    OperatorConstants.button5.whileTrue(new ReverseAlgaeIntake());
+    //OperatorConstants.button5.whileTrue(new ReverseAlgaeIntake());
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
@@ -164,7 +166,7 @@ public class RobotContainer {
     // An example command will be run in autonomous
     // return null;
 
-    return autoChooser.getSelected();
+   return autoChooser.getSelected();
 // drive back auto
     // return new ParallelRaceGroup(
     //   new WaitCommand(2),
@@ -247,3 +249,4 @@ public class RobotContainer {
     // return Autos.exampleAuto(exampleSubsystem);
   }
 }
+

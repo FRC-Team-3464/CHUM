@@ -31,23 +31,8 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
-     // Vanessa 
-   private static final int FRONT_CAMERA = 1; 
-   private static final int BACK_CAMERA = 2; 
-
-   private AprilTagAuto aprilTagAuto;
-   
-   private final Timer timer = new Timer();
-   boolean autoFinished = false;
-  
-   // robotics path for AprilTag
-   // 1- to AprilTag branch; 2- to ArpilTag Coral station
-    int iStage = 1;
-   // branch: -1- left, 1-right
-   int iBranchPick = -1;
-
-
-    // END Vanessa
+  // automomous 15
+  private AprilTagAuto m_autorun;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -87,47 +72,22 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-  /*
+  
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-
+    // codes in district
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
-    */
-
-      timer.reset();
-      timer.start();
+    
+      // autorun - new
+      m_autorun = new AprilTagAuto();
   }
 
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-       // Vanessa
-    while (timer.get()<15 && autoFinished == false)  {
-      System.out.println("time-"+timer.get());
-      aprilTagAuto.processAutoAccess(iStage, iBranchPick);
-
-      // switch camera after processing
-      if (iStage==FRONT_CAMERA) {
-        iStage=BACK_CAMERA;   
-      }
-      else if (iStage==BACK_CAMERA) { 
-        iStage = FRONT_CAMERA;
-      }
-  
-      // Add a delay to avoid busy-waiting
-      try {
-          Thread.sleep(100);
-      } catch (InterruptedException e) {
-          autoFinished = true;
-          System.out.println("autonomousPeriodic error");
-      }
-      // turn moter off
-      autoFinished = true;
-      // stop moters...
-    
-    }
+ 
   }
 
   @Override
