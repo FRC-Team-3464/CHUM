@@ -74,14 +74,16 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
   
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-    // codes in district
-    // schedule the autonomous command (example)
+    // // codes in district
+    // // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
     
       // autorun - new
-      m_autorun = new AprilTagAuto();
+      // m_autorun = new AprilTagAuto();
+      // m_autorun.initialize();
+      // System.out.println("initialized");
   }
 
   /** This function is called periodically during autonomous. */

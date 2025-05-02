@@ -99,9 +99,9 @@ package frc.robot.commands;
                     System.out.println("autonomousPeriodic error");
                 }
                 // turn moter off
-                autoFinished = true;
+                //autoFinished = true;
                 // stop moters...
-            
+                autoFinished =true;
             }
         }
     
@@ -122,10 +122,10 @@ package frc.robot.commands;
                 if (bFront==FRONT_CAMERA){
 
                     sequentialSub.addCommands (
-                    new ParallelDeadlineGroup(
-                        new WaitCommand(1.5), 
-                        new ArmevatorToPosition(4)
-                    ),
+                    // new ParallelDeadlineGroup(
+                    //     // new WaitCommand(1.5), 
+                    //     // new ArmevatorToPosition(4)
+                    // ),
                     new ParallelRaceGroup(
                         new WaitCommand(1),
                         new SwerveCommand(
@@ -146,11 +146,11 @@ package frc.robot.commands;
                         () -> 0, 
                         () -> 0,  
                         () -> true)
-                    ),
-                    new ParallelDeadlineGroup(
-                        new WaitCommand(1.5), 
-                        new ArmevatorToPosition(0)
                     )
+                    // new ParallelDeadlineGroup(
+                    //     new WaitCommand(1.5), 
+                    //     new ArmevatorToPosition(0)
+                    // )
                     );
 
 
