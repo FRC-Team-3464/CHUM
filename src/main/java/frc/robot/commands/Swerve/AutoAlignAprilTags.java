@@ -4,12 +4,9 @@
 
 package frc.robot.commands.Swerve;
 
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.photonvision.PhotonCamera;
-import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -19,16 +16,10 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.AddressableLED;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants;
-import frc.robot.Constants.SwerveConstants;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
@@ -86,6 +77,8 @@ public class AutoAlignAprilTags extends Command {
   public final VisionSubsystem visionSub = VisionSubsystem.getInstance();
   public final SwerveSubsystem swerveSub = SwerveSubsystem.getInstance();
 
+  private boolean bFCamera;
+
   public AutoAlignAprilTags(boolean bFrontCamera, boolean side) {
     // Use addRequirements() here to declare subsystem dependencies.
     if (bFrontCamera==true) {
@@ -96,8 +89,8 @@ public class AutoAlignAprilTags extends Command {
         yOffset = side ? Units.inchesToMeters(7) : Units.inchesToMeters(-4.5);      
     }
     else {
-        ROBOT_TO_CAMERA_3D_BACK = visionSub.getFrontRobotToCamera();
-        ROBOT_TO_CAMERA = new Transform2d(ROBOT_TO_CAMERA_3D.getX(), ROBOT_TO_CAMERA_3D.getY(), ROBOT_TO_CAMERA_3D.getRotation().toRotation2d());
+        ROBOT_TO_CAMERA_3D_BACK = visionSub.getBackRobotToCamera();
+        ROBOT_TO_CAMERA = new Transform2d(ROBOT_TO_CAMERA_3D_BACK.getX(), ROBOT_TO_CAMERA_3D_BACK.getY(), ROBOT_TO_CAMERA_3D_BACK.getRotation().toRotation2d());
     
         photonCamera = visionSub.getBackCamera();
         yOffset = Units.inchesToMeters(0);
@@ -127,6 +120,8 @@ public class AutoAlignAprilTags extends Command {
             );  
     }
     
+    this.bFCamera = bFrontCamera;
+
     addRequirements(swerveSub);
     addRequirements(visionSub);
   }
@@ -152,12 +147,7 @@ public class AutoAlignAprilTags extends Command {
     if (!cameraResults.isEmpty()) {
       var result = cameraResults.get(cameraResults.size() - 1);
       if (result.hasTargets()) {
-        // var targetOpt = result.getTargets().stream()
-        //   .filter(t -> Arrays.asList(coralIDs).contains(t.getFiducialId()))
-        //   .filter(t -> !t.equals(lastTarget) && t.getPoseAmbiguity() >= 0.2 && t.getPoseAmbiguity() != -1)
-        //   .findFirst();
-
-        var targetOpt = result.getTargets().stream()
+         var targetOpt = result.getTargets().stream()
         .filter(t -> t.getPoseAmbiguity() != -1).findFirst();
 
         if (targetOpt.isPresent()) {
@@ -207,11 +197,21 @@ public class AutoAlignAprilTags extends Command {
       swerveSub.drive(new Translation2d(0, 0), 0, false, true);
     }
     else {
+      if (this.bFCamera == true) {
+
       var xSpeed = xController.atGoal() ? 0 : xController.calculate(robotPose.getX());
       var ySpeed = yController.atGoal() ? 0 : yController.calculate(robotPose.getY());
       var thetaSpeed = thetaController.atGoal() ? 0 : thetaController.calculate(robotPose.getRotation().getRadians());
 
       swerveSub.drive(new Translation2d(xSpeed, ySpeed), thetaSpeed, false, false);
+      }
+      else {
+        var xSpeed = xController.atGoal() ? 0 : xController.calculate(robotPose.getX()*(-1));
+        var ySpeed = yController.atGoal() ? 0 : yController.calculate(robotPose.getY()*(-1));
+        var thetaSpeed = thetaController.atGoal() ? 0 : thetaController.calculate(robotPose.getRotation().getRadians());
+          
+        swerveSub.drive(new Translation2d(xSpeed, ySpeed), thetaSpeed, false, false);
+      }
     }
 
   }

@@ -23,7 +23,6 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.AprilTagAuto;
 import frc.robot.commands.DriveForwardAuto;
 import frc.robot.commands.Algae.DeployAlgaeIntake;
 import frc.robot.commands.Algae.RetractAlgaeIntake;
@@ -36,6 +35,7 @@ import frc.robot.commands.Armevator.RunArm;
 import frc.robot.commands.Armevator.RunElevator;
 import frc.robot.commands.Coral.IntakeCoral;
 import frc.robot.commands.Coral.ReverseCoralIntake;
+import frc.robot.commands.Swerve.AutoAlignAprilTags;
 import frc.robot.commands.Swerve.AutoAlignReef;
 import frc.robot.commands.Swerve.AutoPosition;
 import frc.robot.commands.Swerve.CrabWalk;
@@ -43,7 +43,6 @@ import frc.robot.commands.Swerve.SwerveCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
-import frc.robot.commands.AprilTagAuto;;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -58,7 +57,17 @@ public class RobotContainer {
   
     private final SendableChooser<Command> autoChooser;
 
-    //private final AprilTagAuto autoAprilTag = ;
+    // START - used to autonomous process
+    private final SequentialCommandGroup sequencialCmd;
+
+    public boolean autoFinished = false;
+      // front camera-true, back-false
+    public boolean bFront = true;
+      // branch: left - True, right - False
+    public  boolean bLeftBranch = true;
+
+    // END
+
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -166,7 +175,7 @@ public class RobotContainer {
     // An example command will be run in autonomous
     // return null;
 
-   //return autoChooser.getSelected();
+   return autoChooser.getSelected();
 // drive back auto
     // return new ParallelRaceGroup(
     //   new WaitCommand(2),
@@ -212,39 +221,149 @@ public class RobotContainer {
 
     // center L4 auto with auto align:
 
-    return new SequentialCommandGroup (
-      // new ParallelDeadlineGroup(
-      //   new WaitCommand(1.5), 
-      //   new ArmevatorToPosition(4)
-      // ),
-      new ParallelRaceGroup(
-        new WaitCommand(1),
-        new SwerveCommand(
-          () -> -0.15,
-          () -> 0, 
-          () -> 0, 
-          () -> true)
-      ),
-      new AutoAlignReef(true),
-      // new ParallelDeadlineGroup(
-      //   new WaitCommand(1), 
-      //   new ReverseCoralIntake()
-      // ),
-        new ParallelRaceGroup(
-        new WaitCommand(1.0),
-        new SwerveCommand(
-          () -> 0.15,
-          () -> 0, 
-          () -> 0,  
-          () -> true)
-      )
-      // new ParallelDeadlineGroup(
-      //   new WaitCommand(1.5), 
-      //   new ArmevatorToPosition(0)
-      // )
-    );
-    
+    // return new SequentialCommandGroup (
+    //   new ParallelDeadlineGroup(
+    //     new WaitCommand(1.5), 
+    //     new ArmevatorToPosition(4)
+    //   ),
+    //   new ParallelRaceGroup(
+    //     new WaitCommand(1),
+    //     new SwerveCommand(
+    //       () -> -0.15,
+    //       () -> 0, 
+    //       () -> 0, 
+    //       () -> true)
+    //   ),
+    //   new AutoAlignReef(true),
+    //   new ParallelDeadlineGroup(
+    //     new WaitCommand(1), 
+    //     new ReverseCoralIntake()
+    //   ),
+    //     new ParallelRaceGroup(
+    //     new WaitCommand(1.0),
+    //     new SwerveCommand(
+    //       () -> 0.15,
+    //       () -> 0, 
+    //       () -> 0,  
+    //       () -> true)
+    //   ),
+    //   new ParallelDeadlineGroup(
+    //     new WaitCommand(1.5), 
+    //     new ArmevatorToPosition(0)
+    //   )
+    // );
+  
     // return autoChooser.getSelected();
+
+
+
+    // return Autos.exampleAuto(exampleSubsystem);
+  }
+
+  public void proceedAutonomousCommand() {
+    
+              // start with frontCamera, left branch
+              while (autoFinished == false)  {
+
+               // switch camera after processing
+                if (bFront==true) {
+                       //sequencialCmd = new SequentialCommandGroup (
+                       sequencialCmd.addCommands(
+                              new ParallelDeadlineGroup(
+                                new WaitCommand(1.5), 
+                                new ArmevatorToPosition(4)
+                              ),
+                              new ParallelRaceGroup(
+                                new WaitCommand(1),
+                                new SwerveCommand(
+                                  () -> -0.15,
+                                  () -> 0, 
+                                  () -> 0, 
+                                  () -> true)
+                              ),
+                              new AutoAlignAprilTags(bFront, bLeftBranch),
+                              new ParallelDeadlineGroup(
+                                new WaitCommand(1), 
+                                new ReverseCoralIntake()
+                              ),
+                                new ParallelRaceGroup(
+                                new WaitCommand(1.0),
+                                new SwerveCommand(
+                                  () -> 0.15,
+                                  () -> 0, 
+                                  () -> 0,  
+                                  () -> true)
+                              ),
+                              new ParallelDeadlineGroup(
+                                new WaitCommand(1.5), 
+                                new ArmevatorToPosition(0)
+                              )
+                            );
+                // after functions switch to back camera, switch reef side branch
+                bFront = false;   
+                bLeftBranch= bLeftBranch ? false : true;
+                }
+                else if (bFront==false) { 
+                  sequencialCmd.addCommands(
+                   new ParallelRaceGroup(
+                      new WaitCommand(1),
+                      new SwerveCommand(
+                        () -> -0.15,
+                        () -> -0.15, 
+                        () -> 0, 
+                        () -> true)
+                    ),
+                    new AutoAlignAprilTags(bFront, bLeftBranch),
+                    
+                      new ParallelRaceGroup(
+                      new WaitCommand(1.0),
+                      new SwerveCommand(
+                        () -> 0.15,
+                        () -> 0, 
+                        () -> 0,  
+                        () -> true)
+                      ),
+                     new ParallelDeadlineGroup(
+                      new WaitCommand(1.5), 
+                      new ArmevatorToPosition(0)
+                    )
+                  );
+                  
+                // switch to front camera  
+                bFront = true;
+
+                }
+                else {
+                  sequencialCmd.addCommands (
+                    new ParallelRaceGroup(
+                       new WaitCommand(1),
+                       new SwerveCommand(
+                         () -> -0.15,
+                         () -> -0.15, 
+                         () -> 0, 
+                         () -> true)
+                     )
+                  ) ;              
+                }
+            
+                // Add a delay to avoid busy-waiting
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    autoFinished = true;
+                    System.out.println("autonomousPeriodic error");
+                }
+                // turn moter off
+                //autoFinished = true;
+                // stop moters...
+                autoFinished =true;
+            }
+    // End 
+
+   
+    // return autoChooser.getSelected();
+
+
 
     // return Autos.exampleAuto(exampleSubsystem);
   }

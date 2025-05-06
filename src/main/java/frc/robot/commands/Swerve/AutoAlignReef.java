@@ -120,33 +120,18 @@ public class AutoAlignReef extends Command {
   public void execute() {
  
     var robotPose = swerveSub.getPose();
-    //var cameraResults = photonCamera.getAllUnreadResults();
     var cameraResults = photonCamera.getAllUnreadResults();
     if (!cameraResults.isEmpty()) {
-        photonCamera.takeInputSnapshot();
-        System.out.println("hi");  
           var result = cameraResults.get(cameraResults.size()-1 );
-          System.out.println("get result");   
     if (result.hasTargets()) {
          // var targetOpt = result.getTargets().stream()
         //   .filter(t -> Arrays.asList(coralIDs).contains(t.getFiducialId()))
         //   .filter(t -> !t.equals(lastTarget) && t.getPoseAmbiguity() >= 0.2 && t.getPoseAmbiguity() != -1)
         //   .findFirst();
-        System.out.println("Find target");
         var targetOpt = result.getTargets().stream()
         .filter(t -> t.getPoseAmbiguity() != -1).findFirst();
-   
         
-                      //PhotonTrackedTarget target = result.getBestTarget();
-              //   double targetX = targetOpt.get().getBestCameraToTarget().getX();
-              //   double targetY = targetOpt.get().getBestCameraToTarget().getY();
-              //  // double targetYaw = target.getYaw()
-              // swerveSub.drive(new Translation2d(targetOpt.get().getBestCameraToTarget().getX(), targetOpt.get().getBestCameraToTarget().getY()), 0, false, true));
-
-              System.out.println("targetOpt");  
-     //System.out.println(tarisPresentgetOpt.get().getBestCameraToTarget().getX());   
         if (targetOpt.isPresent()) {
-          System.out.println("isPresent");   
           // swerveSub.offsetGyro(gyroOffsets.get(targetOpt.get().getFiducialId()));
           System.out.println(gyroOffsets.get(targetOpt.get().getFiducialId()));
 

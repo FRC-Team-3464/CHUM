@@ -80,6 +80,10 @@ public class VisionSubsystem extends SubsystemBase {
     return backAprilCamera;
   }
 
+  public Transform3d getBackRobotToCamera() {
+    return backCameraTransform;
+  }
+
 
   public Pose2d getRobotToTagTransform(boolean right, int Id) { 
     Pose2d tagPose = fieldLayout.getTagPose(Id).get().toPose2d();
