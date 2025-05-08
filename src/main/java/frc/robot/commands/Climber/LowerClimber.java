@@ -23,9 +23,7 @@ public class LowerClimber extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    climberSub.StopClimber();
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -42,6 +40,6 @@ public class LowerClimber extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return climberSub.GetLowerLimit();
+    return false;
   }
 }
