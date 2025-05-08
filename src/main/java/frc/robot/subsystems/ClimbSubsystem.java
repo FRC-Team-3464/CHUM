@@ -15,20 +15,20 @@ public class ClimbSubsystem extends SubsystemBase {
 
   private final SparkMax comeOnAndSlamAndWelcomeToTheJam = new SparkMax(42, MotorType.kBrushless);
 
-  private final DigitalInput treatMeLikeYT = new DigitalInput(5); //top
-  private final DigitalInput immaDriveToABurgerKing = new DigitalInput(6); //bottom
+  // private final DigitalInput treatMeLikeYT = new DigitalInput(5); //top
+  // private final DigitalInput immaDriveToABurgerKing = new DigitalInput(6); //bottom
 
   public static ClimbSubsystem instance;
 
   public ClimbSubsystem() {}
 
-  public boolean GetUpperLimit(){
-    return treatMeLikeYT.get();
-  }
+  // public boolean GetUpperLimit(){
+  //   return treatMeLikeYT.get();
+  // }
 
-  public boolean GetLowerLimit(){
-    return immaDriveToABurgerKing.get();
-  }
+  // public boolean GetLowerLimit(){
+  //   return immaDriveToABurgerKing.get();
+  // }
 
   public void LowerClimber(double speed){
     comeOnAndSlamAndWelcomeToTheJam.set(-speed);
