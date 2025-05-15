@@ -35,7 +35,6 @@ import frc.robot.util.SwerveModule;
 public class SwerveSubsystem extends SubsystemBase {
   /** Creates a new SwerveSubsystem. */
   public static SwerveSubsystem instance;
-  public SwerveDriveOdometry swerveOdometry;
   public SwerveModule[] swerveMods;
 
   public AHRS gyro;
@@ -59,7 +58,7 @@ public class SwerveSubsystem extends SubsystemBase {
     Timer.delay(1);
     resetModulesToAbsolute();
 
-    swerveOdometry = new SwerveDriveOdometry(SwerveConstants.swerveKinematics, getYaw(), getModulePositions());
+    // swerveOdometry = new SwerveDriveOdometry(SwerveConstants.swerveKinematics, getYaw(), getModulePositions());
 
     poseEstimator = new SwerveDrivePoseEstimator(Constants.SwerveConstants.swerveKinematics, getYaw(), getModulePositions(), new Pose2d());
 
@@ -73,7 +72,7 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
      AutoBuilder.configure(
-            this::getSwervePose, // Robot pose supplier
+            this::getPose, // Robot pose supplier
             this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
             this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
             (speeds, feedforwards) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
@@ -90,7 +89,7 @@ public class SwerveSubsystem extends SubsystemBase {
               var alliance = DriverStation.getAlliance();
 
               if (alliance.isPresent()) {
-                return !(alliance.get() == DriverStation.Alliance.Red);
+                return alliance.get() == DriverStation.Alliance.Red;
               }
               return false;
             },
@@ -113,7 +112,7 @@ public class SwerveSubsystem extends SubsystemBase {
                                 translation.getX(), 
                                 translation.getY(), 
                                 rotation, 
-                                getYaw()
+                                getHeading()
                             )
                             : new ChassisSpeeds(
                                 translation.getX(), 
@@ -166,16 +165,16 @@ public class SwerveSubsystem extends SubsystemBase {
     return poseEstimator.getEstimatedPosition();
   }
 
-  public Pose2d getSwervePose() {
-    return swerveOdometry.getPoseMeters();
+  public Rotation2d getHeading() {
+    return poseEstimator.getEstimatedPosition().getRotation();
   }
 
   public void zeroPose() {
-    swerveOdometry.resetPose(new Pose2d(0, 0, new Rotation2d(0)));
+    poseEstimator.resetPose(new Pose2d(0, 0, new Rotation2d(0)));
   }
 
   public void resetPose(Pose2d pose) {
-    swerveOdometry.resetPosition(getYaw(), getModulePositions(), pose);
+    poseEstimator.resetPosition(getYaw(), getModulePositions(), pose);
   }
 
   public ChassisSpeeds getRobotRelativeSpeeds(){
