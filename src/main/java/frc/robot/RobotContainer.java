@@ -155,10 +155,10 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    // return null;
+    // // An example command will be run in autonomous
+    // // return null;
 
-    return autoChooser.getSelected();
+    // return autoChooser.getSelected();
 // drive back auto
     // return new ParallelRaceGroup(
     //   new WaitCommand(2),
@@ -204,37 +204,42 @@ public class RobotContainer {
 
     // center L4 auto with auto align:
 
-    // return new SequentialCommandGroup (
-    //   new ParallelDeadlineGroup(
-    //     new WaitCommand(1.5), 
-    //     new ArmevatorToPosition(4)
-    //   ),
-    //   new ParallelRaceGroup(
-    //     new WaitCommand(1),
-    //     new SwerveCommand(
-    //       () -> -0.15,
-    //       () -> 0, 
-    //       () -> 0, 
-    //       () -> true)
-    //   ),
-    //   new AutoAlignReef(true),
-    //   new ParallelDeadlineGroup(
-    //     new WaitCommand(1), 
-    //     new ReverseCoralIntake()
-    //   ),
-    //   new ParallelRaceGroup(
-    //     new WaitCommand(1.0),
-    //     new SwerveCommand(
-    //       () -> 0.15,
-    //       () -> 0, 
-    //       () -> 0,  
-    //       () -> true)
-    //   ),
-    //   new ParallelDeadlineGroup(
-    //     new WaitCommand(1.5), 
-    //     new ArmevatorToPosition(0)
-    //   )
-    // );
+    return new SequentialCommandGroup (
+    new ParallelDeadlineGroup(
+      new WaitCommand(1.5),
+      new LowerClimber()
+    ), 
+    
+    new ParallelDeadlineGroup(
+        new WaitCommand(1.5), 
+        new ArmevatorToPosition(4)
+      ),
+      new ParallelRaceGroup(
+        new WaitCommand(1),
+        new SwerveCommand(
+          () -> -0.15,
+          () -> 0, 
+          () -> 0, 
+          () -> true)
+      ),
+      new AutoAlignReef(true),
+      new ParallelDeadlineGroup(
+        new WaitCommand(1), 
+        new ReverseCoralIntake()
+      ),
+      new ParallelRaceGroup(
+        new WaitCommand(1.0),
+        new SwerveCommand(
+          () -> 0.15,
+          () -> 0, 
+          () -> 0,  
+          () -> true)
+      ),
+      new ParallelDeadlineGroup(
+        new WaitCommand(1.5), 
+        new ArmevatorToPosition(0)
+      )
+    );
     
     // return autoChooser.getSelected();
 
