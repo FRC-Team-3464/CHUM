@@ -208,6 +208,7 @@ public class SwerveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     poseEstimator.update(getYaw(), getModulePositions());
+    swerveOdometry.update(getYaw(), getModulePositions());
 
     SmartDashboard.putNumber("Gyro Heading", gyro.getAngle());
     // field.setRobotPose(getPose());

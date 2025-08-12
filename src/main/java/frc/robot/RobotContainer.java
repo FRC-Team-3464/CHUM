@@ -39,6 +39,7 @@ import frc.robot.commands.Coral.IntakeCoral;
 import frc.robot.commands.Coral.ReverseCoralIntake;
 import frc.robot.commands.Swerve.AutoAlignReef;
 import frc.robot.commands.Swerve.AutoPosition;
+import frc.robot.commands.Swerve.AutoRotation;
 import frc.robot.commands.Swerve.CrabWalk;
 import frc.robot.commands.Swerve.SwerveCommand;
 import frc.robot.subsystems.ArmSubsystem;
@@ -158,7 +159,7 @@ public class RobotContainer {
     // An example command will be run in autonomous
     // return null;
 
-    return autoChooser.getSelected();
+    // return autoChooser.getSelected();
 // drive back auto
     // return new ParallelRaceGroup(
     //   new WaitCommand(2),
@@ -171,36 +172,43 @@ public class RobotContainer {
 
     // center L4 auto without auto align:
     
-    // return new SequentialCommandGroup (
-    //   new ParallelDeadlineGroup(
-    //     new WaitCommand(1.5), 
-    //     new ArmevatorToPosition(4)
-    //   ),
-    //   new ParallelRaceGroup(
-    //     new WaitCommand(2.2),
-    //     new SwerveCommand(
-    //       () -> -0.15,
-    //       () -> 0, 
-    //       () -> 0, 
-    //       () -> true)
-    //   ),
-    //   new ParallelDeadlineGroup(
-    //     new WaitCommand(1), 
-    //     new ReverseCoralIntake()
-    //   ),
-    //   new ParallelRaceGroup(
-    //     new WaitCommand(1.0),
-    //     new SwerveCommand(
-    //       () -> 0.15,
-    //       () -> 0, 
-    //       () -> 0,  
-    //       () -> true)
-    //   ),
-    //   new ParallelDeadlineGroup(
-    //     new WaitCommand(1.5), 
-    //     new ArmevatorToPosition(0)
-    //   )
-    // );
+    return new SequentialCommandGroup (
+    new ParallelDeadlineGroup(
+        new WaitCommand(1.5),
+        new RaiseClimber()
+      ),
+
+    new ParallelDeadlineGroup(
+        new WaitCommand(1.5), 
+        new ArmevatorToPosition(4)
+      ),
+      new ParallelRaceGroup(
+        new WaitCommand(2.2),
+        new SwerveCommand(
+          () -> -0.15,
+          () -> 0, 
+          () -> 0, 
+          () -> true)
+      ),
+      new ParallelDeadlineGroup(
+        new WaitCommand(1), 
+        new ReverseCoralIntake()
+      ),
+      new ParallelRaceGroup(
+        new WaitCommand(1.0),
+        new SwerveCommand(
+          () -> 0.15,
+          () -> 0, 
+          () -> 0,  
+          () -> true)
+      ),
+      new ParallelDeadlineGroup(
+        new WaitCommand(1.5), 
+        new ArmevatorToPosition(0)
+      )
+    );
+
+   
 
     // center L4 auto with auto align:
 
