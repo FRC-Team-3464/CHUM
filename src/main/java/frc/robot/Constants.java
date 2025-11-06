@@ -49,6 +49,14 @@ public final class Constants {
     public static double kArmDangerPosition = 3.714;
   }
 
+  public static class AlgaeConstants {
+    public static final double INTAKE_SPEED = 0.3;
+    public static final double SPIT_SPEED = 0.3;
+
+    public static final double DEPLOY_SPEED = 0.3;
+    public static final double RETRACT_SPEED = 0.3;
+  }
+
   public static class SwerveConstants {
 
     public static final IdleMode driveIdleMode = IdleMode.kBrake;

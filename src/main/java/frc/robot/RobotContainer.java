@@ -10,6 +10,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -42,9 +43,13 @@ import frc.robot.commands.Swerve.AutoPosition;
 import frc.robot.commands.Swerve.AutoRotation;
 import frc.robot.commands.Swerve.CrabWalk;
 import frc.robot.commands.Swerve.SwerveCommand;
+import frc.robot.factories.AlgaeFactory;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.subsystems.algae.AlgaeIOHardware;
+import frc.robot.subsystems.algae.AlgaeIOSim;
+import frc.robot.subsystems.algae.AlgaeSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -55,6 +60,8 @@ import frc.robot.subsystems.SwerveSubsystem;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem swerveSub = SwerveSubsystem.getInstance();
+  private final AlgaeSubsystem m_algaeSubsystem;
+  private final AlgaeFactory m_algaeFactory;
 
   
     private final SendableChooser<Command> autoChooser;
@@ -63,6 +70,14 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    if (Robot.isReal()){
+      m_algaeSubsystem = new AlgaeSubsystem(new AlgaeIOHardware());
+    } else {
+      m_algaeSubsystem = new AlgaeSubsystem(new AlgaeIOSim());
+    }
+
+    m_algaeFactory = new AlgaeFactory(m_algaeSubsystem);
+
     swerveSub.setDefaultCommand(
       new SwerveCommand(
         () -> Constants.OperatorConstants.xbox.getRawAxis(XboxController.Axis.kLeftY.value),
