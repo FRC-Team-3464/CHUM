@@ -7,15 +7,15 @@ package frc.robot.commands.Armevator;
 import java.lang.annotation.Target;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.elevator.OldElevatorSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ElevatorToPosition extends Command {
-  private final ElevatorSubsystem elevatorSub;
+  private final OldElevatorSubsystem elevatorSub;
   public double height;
   /** Creates a new ElevatorCommand. */
   public ElevatorToPosition(double target) {
-    elevatorSub = ElevatorSubsystem.getInstance();
+    elevatorSub = OldElevatorSubsystem.getInstance();
     height = target;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(elevatorSub);

@@ -6,8 +6,7 @@ package frc.robot.subsystems.algae;
  */
 public interface AlgaeIO {
   /** Updates the AlgaeIOInputs class. */
-  default void updateInputs(AlgaeIOInputs inputs) {
-  }
+  default void updateInputs(AlgaeIOInputs inputs) {}
 
   /** Values for the AlgaeSubsystem. */
   public class AlgaeIOInputs {
@@ -28,14 +27,16 @@ public interface AlgaeIO {
     public boolean algaeDetected = false;
   }
 
-  /** Sets the pivot motor speed (-1.0 to 1.0).
+  /** 
+   * Sets the pivot motor speed (-1.0 to 1.0).
    * Positive values extend the intake; negative values retract it.
   */
-  void setPivotSpeed(double speed);
+  default void setPivotSpeed(double speed) {}
 
-  /** Sets the roller motor speed (-1.0 to 1.0).
+  /** 
+   * Sets the roller motor speed (-1.0 to 1.0).
    * Positive values intake; negative values spit out.
   */
-  void setRollerSpeed(double speed);
+  default void setRollerSpeed(double speed) {}
 
 }

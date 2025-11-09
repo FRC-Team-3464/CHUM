@@ -8,14 +8,14 @@ import java.util.Map;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.SwerveConstants;
-import frc.robot.subsystems.CoralSubsystem;
-import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.coral.CoralSubsystem;
+import frc.robot.subsystems.elevator.OldElevatorSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ReverseCoralIntake extends Command {
  
   private CoralSubsystem coralSub;
-  private ElevatorSubsystem elevatorSub;
+  private OldElevatorSubsystem elevatorSub;
 
   private double speed;
 
@@ -24,7 +24,7 @@ public class ReverseCoralIntake extends Command {
   public ReverseCoralIntake() {
     // Use addRequirements() here to declare subsystem dependencies.
     coralSub = CoralSubsystem.getInstance();
-    elevatorSub = ElevatorSubsystem.getInstance();
+    elevatorSub = OldElevatorSubsystem.getInstance();
 
     addRequirements(elevatorSub);
     addRequirements(coralSub);

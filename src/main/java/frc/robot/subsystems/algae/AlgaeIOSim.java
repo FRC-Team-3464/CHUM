@@ -13,6 +13,8 @@ public class AlgaeIOSim implements AlgaeIO {
     private boolean m_stowLimit = true;
     private boolean m_algaeDetected = false;
 
+    public AlgaeIOSim() {}
+
     @Override
     public void updateInputs(AlgaeIOInputs inputs) {
         inputs.pivotPositionRot = m_pivotPosition;
@@ -22,20 +24,7 @@ public class AlgaeIOSim implements AlgaeIO {
         inputs.algaeDetected = m_algaeDetected;
     }
 
-    @Override
-    public void setPivotSpeed(double speed) {
-        /* Simulates pivot speed changing */
-        m_rollerVelocity = 0;
-        m_pivotPosition += -speed * 0.02;
-    }
-
-    @Override
-    public void setRollerSpeed(double speed) {
-        /* Simulates roller velocity changing */
-        m_rollerVelocity = speed * 1000;
-    }
-
-    /* Simulates limits in simulation */
+    /* Simulates limits */
     public void setExtendedLimit(boolean extended) { m_extendedLimit = extended; }
     public void setStowLimit(boolean stow) { m_stowLimit = stow; }
     public void setAlgaeDetected(boolean detected) { m_algaeDetected = detected; }

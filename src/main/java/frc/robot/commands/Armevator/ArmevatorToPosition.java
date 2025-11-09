@@ -9,21 +9,21 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Constants.ArmevatorConstants;
 import frc.robot.Constants.SwerveConstants;
-import frc.robot.subsystems.ArmSubsystem;
-import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.arm.ArmSubsystem;
+import frc.robot.subsystems.elevator.OldElevatorSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ArmevatorToPosition extends Command {
   /** Creates a new ArmevatorToPosition. */
   private final ArmSubsystem armSub;
-  private final ElevatorSubsystem elevatorSub;
+  private final OldElevatorSubsystem elevatorSub;
   private int target;
 
   private Timer timer = new Timer();
 
   public ArmevatorToPosition(int position) {
     armSub = ArmSubsystem.getInstance();
-    elevatorSub = ElevatorSubsystem.getInstance();
+    elevatorSub = OldElevatorSubsystem.getInstance();
 
     addRequirements(armSub);
     addRequirements(elevatorSub);
@@ -49,8 +49,8 @@ public class ArmevatorToPosition extends Command {
     //   armSub.setArmTarget(ArmevatorConstants.positions[target][2]);
     // }
     // else {
-      elevatorSub.setElevatorTarget(ArmevatorConstants.positions[target][1]);
-      armSub.setArmTarget(ArmevatorConstants.positions[target][2]);
+      elevatorSub.setElevatorTarget(ArmevatorConstants.kPositions[target][1]);
+      armSub.setArmTarget(ArmevatorConstants.kPositions[target][2]);
     // }
     Constants.SwerveConstants.targetPosition = target;
 

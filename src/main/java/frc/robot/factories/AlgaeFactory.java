@@ -16,10 +16,11 @@ public class AlgaeFactory {
         m_subsystem = subsystem;
     }
 
-    /** Sets AlgaeSubsystem state */
+    /** Sets AlgaeSubsystem state, helper method. */
     private Command setState(AlgaeState state) {
         return new InstantCommand(
-            () -> m_subsystem.setState(state), m_subsystem
+            () -> m_subsystem.setState(state), 
+            m_subsystem
         ).withName(state.toString());
     }
 
@@ -40,6 +41,6 @@ public class AlgaeFactory {
     }
 
     public Command stop() {
-        return setState(AlgaeState.STOPPED);
+        return setState(AlgaeState.IDLE);
     }
 }

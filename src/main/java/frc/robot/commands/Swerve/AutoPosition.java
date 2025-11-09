@@ -19,8 +19,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.SwerveConstants;
-import frc.robot.subsystems.SwerveSubsystem;
-import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.subsystems.swerve.OldSwerveSubsystem;
+import frc.robot.subsystems.vision.VisionSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class AutoPosition extends Command {
@@ -35,7 +35,7 @@ public class AutoPosition extends Command {
  
 
   public final VisionSubsystem visionSub = VisionSubsystem.getInstance();
-  public final SwerveSubsystem swerveSub = SwerveSubsystem.getInstance();
+  public final OldSwerveSubsystem swerveSub = OldSwerveSubsystem.getInstance();
 
   public AutoPosition() {
     xController.setTolerance(0.2);

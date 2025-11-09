@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.util;
+package frc.robot.subsystems.swerve.module;
 
 import java.time.chrono.IsoChronology;
 
@@ -36,9 +36,10 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Constants.SwerveConstants;
+import frc.robot.util.ModuleUtils;
 
 /** Add your docs here. */
-public class SwerveModule {
+public class OldSwerveModule {
     
     public int moduleNumber;
     private Rotation2d angleOffset;
@@ -57,12 +58,12 @@ public class SwerveModule {
     private TalonFXConfigurator driveMotorConfigurator;
     private CurrentLimitsConfigs driveSupplyLimit;
 
-    SimpleMotorFeedforward driveFeedForward = new SimpleMotorFeedforward(SwerveConstants.driveKS, SwerveConstants.driveKV, SwerveConstants.driveKA);
+    SimpleMotorFeedforward driveFeedForward = new SimpleMotorFeedforward(SwerveConstants.kDriveKS, SwerveConstants.kDriveKV, SwerveConstants.kDriveKA);
 
     private final DutyCycleOut driveDutyCycle = new DutyCycleOut(0);
     private final VelocityVoltage driveVelocity = new VelocityVoltage(0);
 
-    public SwerveModule(int moduleNumber, ModuleConstants moduleConstants) {
+    public OldSwerveModule(int moduleNumber, ModuleConstants moduleConstants) {
         this.moduleNumber = moduleNumber;
         this.angleOffset = moduleConstants.angleOffset;
 
@@ -82,7 +83,7 @@ public class SwerveModule {
 
 
     public void setDesiredState(SwerveModuleState desiredState, Boolean isOpenLoop) {
-        desiredState = ModuleState.optimize(desiredState, getState().angle);
+        desiredState = ModuleUtils.optimize(desiredState, getState().angle);
         // cos compensation for reducing skew, reduces the speed when it's not pointing in the right direction
         desiredState.speedMetersPerSecond *= desiredState.angle.minus(getState().angle).getCos(); 
         setAngle(desiredState);
@@ -97,7 +98,7 @@ public class SwerveModule {
         }
 
         else {
-          driveVelocity.Velocity = desiredState.speedMetersPerSecond / SwerveConstants.wheelCircumference;
+          driveVelocity.Velocity = desiredState.speedMetersPerSecond / SwerveConstants.kWheelCircumference;
         //   driveVelocity.FeedForward = driveFeedForward.calculate(desiredState.speedMetersPerSecond);
           driveMotor.setControl(driveVelocity);
         }
@@ -138,13 +139,13 @@ public class SwerveModule {
 
     public SwerveModuleState getState() {
         return new SwerveModuleState(
-            (driveMotor.getVelocity().getValueAsDouble() * SwerveConstants.driveRevToMeters), 
+            (driveMotor.getVelocity().getValueAsDouble() * SwerveConstants.kDriveRevToMeters), 
             getAngle());
     }
 
     public SwerveModulePosition getPosition(){
         return new SwerveModulePosition(
-            (driveMotor.getPosition().getValueAsDouble() * SwerveConstants.driveRevToMeters),
+            (driveMotor.getPosition().getValueAsDouble() * SwerveConstants.kDriveRevToMeters),
             getAngle());
     }
 
@@ -174,20 +175,20 @@ public class SwerveModule {
         turnSparkMaxConfig = new SparkMaxConfig();
         turnEncoderConfig = new EncoderConfig();
         turnSparkMaxConfig
-            .smartCurrentLimit(SwerveConstants.anglePeakCurrentLimit)
-            .idleMode(SwerveConstants.angleIdleMode)
-            .inverted(SwerveConstants.angleMotorInvert)
+            .smartCurrentLimit(SwerveConstants.kAnglePeakCurrentLimit)
+            .idleMode(SwerveConstants.kAngleIdleMode)
+            .inverted(SwerveConstants.kAngleMotorInvert)
             .closedLoop
                 .pidf(
-                    SwerveConstants.angleKP, 
-                    SwerveConstants.angleKI, 
-                    SwerveConstants.angleKD, 
-                    SwerveConstants.angleKF, 
+                    SwerveConstants.kAngleKP, 
+                    SwerveConstants.kAngleKI, 
+                    SwerveConstants.kAngleKD, 
+                    SwerveConstants.kAngleKF, 
                     ClosedLoopSlot.kSlot0)
-                .outputRange(-SwerveConstants.anglePower, SwerveConstants.anglePower);
+                .outputRange(-SwerveConstants.kAnglePower, SwerveConstants.kAnglePower);
         turnEncoderConfig
-            .positionConversionFactor(SwerveConstants.DegreesPerTurnRotation)
-            .velocityConversionFactor(SwerveConstants.DegreesPerTurnRotation / 60); // this is degrees per sec
+            .positionConversionFactor(SwerveConstants.kDegreesPerTurnRotation)
+            .velocityConversionFactor(SwerveConstants.kDegreesPerTurnRotation / 60); // this is degrees per sec
         turnSparkMaxConfig.encoder.apply(turnEncoderConfig);
         turnMotor.configure(turnSparkMaxConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
     }
@@ -197,20 +198,20 @@ public class SwerveModule {
         driveMotorConfigurator = driveMotor.getConfigurator();
         driveSupplyLimit = new CurrentLimitsConfigs();
 
-        driveSupplyLimit.SupplyCurrentLimit = SwerveConstants.driveSupplyCurrentLimit;
-        driveSupplyLimit.SupplyCurrentLimitEnable = SwerveConstants.driveSupplyCurrentLimitEnable;
-        driveSupplyLimit.SupplyCurrentLowerLimit = SwerveConstants.driveSupplyCurrentThreshold;
-        driveSupplyLimit.SupplyCurrentLowerTime = SwerveConstants.driveSupplyTimeThreshold;
+        driveSupplyLimit.SupplyCurrentLimit = SwerveConstants.kDriveSupplyCurrentLimit;
+        driveSupplyLimit.SupplyCurrentLimitEnable = SwerveConstants.kDriveSupplyCurrentLimitEnable;
+        driveSupplyLimit.SupplyCurrentLowerLimit = SwerveConstants.kDriveSupplyCurrentThreshold;
+        driveSupplyLimit.SupplyCurrentLowerTime = SwerveConstants.kDriveSupplyTimeThreshold;
 
-        driveMotorConfiguration.Slot0.kP = SwerveConstants.driveKP;
-        driveMotorConfiguration.Slot0.kI = SwerveConstants.driveKI;
-        driveMotorConfiguration.Slot0.kD = SwerveConstants.driveKD;
-        driveMotorConfiguration.Slot0.kS = SwerveConstants.driveKS; 
-        driveMotorConfiguration.Slot0.kV = SwerveConstants.driveKV;
-        driveMotorConfiguration.Slot0.kA = SwerveConstants.driveKA;
-        driveMotorConfiguration.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = SwerveConstants.openLoopRamp;
-        driveMotorConfiguration.ClosedLoopRamps.DutyCycleClosedLoopRampPeriod = SwerveConstants.closedLoopRamp;
-        driveMotorConfiguration.MotorOutput.Inverted = SwerveConstants.driveMotorInvert;
+        driveMotorConfiguration.Slot0.kP = SwerveConstants.kDriveKP;
+        driveMotorConfiguration.Slot0.kI = SwerveConstants.kDriveKI;
+        driveMotorConfiguration.Slot0.kD = SwerveConstants.kDriveKD;
+        driveMotorConfiguration.Slot0.kS = SwerveConstants.kDriveKS; 
+        driveMotorConfiguration.Slot0.kV = SwerveConstants.kDriveKV;
+        driveMotorConfiguration.Slot0.kA = SwerveConstants.kDriveKA;
+        driveMotorConfiguration.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = SwerveConstants.kOpenLoopRamp;
+        driveMotorConfiguration.ClosedLoopRamps.DutyCycleClosedLoopRampPeriod = SwerveConstants.kClosedLoopRamp;
+        driveMotorConfiguration.MotorOutput.Inverted = SwerveConstants.kDriveMotorInvert;
         driveMotorConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
         driveMotorConfigurator.apply(driveMotorConfiguration);

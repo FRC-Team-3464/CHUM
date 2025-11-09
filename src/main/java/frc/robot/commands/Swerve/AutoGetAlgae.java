@@ -8,14 +8,14 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
-import frc.robot.subsystems.SwerveSubsystem;
-import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.subsystems.swerve.OldSwerveSubsystem;
+import frc.robot.subsystems.vision.VisionSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class AutoGetAlgae extends Command {
   /** Creates a new AutoGetAlgae. */
   private final VisionSubsystem visionSub = VisionSubsystem.getInstance();
-  private final SwerveSubsystem swerveSub = SwerveSubsystem.getInstance();
+  private final OldSwerveSubsystem swerveSub = OldSwerveSubsystem.getInstance();
 
   private final Timer timer = new Timer();
 

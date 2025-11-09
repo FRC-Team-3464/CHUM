@@ -25,10 +25,10 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.DriveForwardAuto;
-import frc.robot.commands.Algae.DeployAlgaeIntake;
-import frc.robot.commands.Algae.RetractAlgaeIntake;
-import frc.robot.commands.Algae.ReverseAlgaeIntake;
-import frc.robot.commands.Algae.RunAlgaeIntake;
+// import frc.robot.commands.Algae.DeployAlgaeIntake;
+// import frc.robot.commands.Algae.RetractAlgaeIntake;
+// import frc.robot.commands.Algae.ReverseAlgaeIntake;
+// import frc.robot.commands.Algae.RunAlgaeIntake;
 import frc.robot.commands.Armevator.ArmToPosition;
 import frc.robot.commands.Armevator.ArmevatorToPosition;
 import frc.robot.commands.Armevator.ElevatorToPosition;
@@ -44,12 +44,12 @@ import frc.robot.commands.Swerve.AutoRotation;
 import frc.robot.commands.Swerve.CrabWalk;
 import frc.robot.commands.Swerve.SwerveCommand;
 import frc.robot.factories.AlgaeFactory;
-import frc.robot.subsystems.ArmSubsystem;
-import frc.robot.subsystems.ElevatorSubsystem;
-import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.algae.AlgaeIOHardware;
 import frc.robot.subsystems.algae.AlgaeIOSim;
 import frc.robot.subsystems.algae.AlgaeSubsystem;
+import frc.robot.subsystems.arm.ArmSubsystem;
+import frc.robot.subsystems.elevator.OldElevatorSubsystem;
+import frc.robot.subsystems.swerve.OldSwerveSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -59,7 +59,7 @@ import frc.robot.subsystems.algae.AlgaeSubsystem;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final SwerveSubsystem swerveSub = SwerveSubsystem.getInstance();
+  private final OldSwerveSubsystem swerveSub = OldSwerveSubsystem.getInstance();
   private final AlgaeSubsystem m_algaeSubsystem;
   private final AlgaeFactory m_algaeFactory;
 
@@ -147,11 +147,7 @@ public class RobotContainer {
 
     OperatorConstants.button12.onTrue(new InstantCommand(() -> ArmSubsystem.getInstance().setArmEncoderPosition(0)));
     
-    // OperatorConstants.button4.whileTrue(new DeployAlgaeIntake());
-    // OperatorConstants.button3.whileTrue(new RetractAlgaeIntake());
-    
-    // OperatorConstants.button6.whileTrue(new RunAlgaeIntake());
-    // OperatorConstants.button5.whileTrue(new ReverseAlgaeIntake());
+    OperatorConstants.button4.whileTrue(m_algaeFactory.deployIntake());
 
     OperatorConstants.button4.whileTrue(new LowerClimber());
     OperatorConstants.button3.whileTrue(new RaiseClimber());

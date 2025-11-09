@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package frc.robot.subsystems.swerve;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
@@ -30,13 +30,14 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.SwerveConstants;
-import frc.robot.util.SwerveModule;
+import frc.robot.Constants.SwerveConstants.ModuleConstants.*;
+import frc.robot.subsystems.swerve.module.OldSwerveModule;
 
-public class SwerveSubsystem extends SubsystemBase {
+public class OldSwerveSubsystem extends SubsystemBase {
   /** Creates a new SwerveSubsystem. */
-  public static SwerveSubsystem instance;
+  public static OldSwerveSubsystem instance;
   public SwerveDriveOdometry swerveOdometry;
-  public SwerveModule[] swerveMods;
+  public OldSwerveModule[] swerveMods;
 
   public AHRS gyro;
   public SwerveDrivePoseEstimator poseEstimator;
@@ -45,15 +46,15 @@ public class SwerveSubsystem extends SubsystemBase {
 
   private final Field2d field;
   
-  public SwerveSubsystem() {
+  public OldSwerveSubsystem() {
     gyro = new AHRS(NavXComType.kMXP_SPI);
     gyro.zeroYaw();
 
-    swerveMods = new SwerveModule[] {
-      new SwerveModule(0, Constants.ModConstants.Mod0.constants),
-      new SwerveModule(1, Constants.ModConstants.Mod1.constants),
-      new SwerveModule(2, Constants.ModConstants.Mod2.constants),
-      new SwerveModule(3, Constants.ModConstants.Mod3.constants)
+    swerveMods = new OldSwerveModule[] {
+      new OldSwerveModule(0, Constants.SwerveConstants.ModuleConstants.FrontLeft.constants),
+      new OldSwerveModule(1, Constants.ModConstants.Mod1.constants),
+      new OldSwerveModule(2, Constants.ModConstants.Mod2.constants),
+      new OldSwerveModule(3, Constants.ModConstants.Mod3.constants)
     };
 
     Timer.delay(1);
@@ -99,9 +100,9 @@ public class SwerveSubsystem extends SubsystemBase {
 
   }
 
-  public static SwerveSubsystem getInstance() {
+  public static OldSwerveSubsystem getInstance() {
     if (instance == null) {
-      instance = new SwerveSubsystem();
+      instance = new OldSwerveSubsystem();
     }
     return instance;
   }
@@ -123,7 +124,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.SwerveConstants.kMaxTeleDriveSpeed);
 
-    for(SwerveModule mod : swerveMods){
+    for(OldSwerveModule mod : swerveMods){
         mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
         // System.out.println(mod.moduleNumber + "    "+ mod.getCanCoder().getDegrees());
     }
@@ -131,7 +132,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public SwerveModulePosition[] getModulePositions() {
     SwerveModulePosition[] positions = new SwerveModulePosition[4];
-    for(SwerveModule mod : swerveMods) {
+    for(OldSwerveModule mod : swerveMods) {
         positions[mod.getModuleNumber()] = mod.getPosition();
     } 
     return positions;
@@ -139,7 +140,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public SwerveModuleState[] getModuleStates(){
     SwerveModuleState[] states = new SwerveModuleState[4];
-    for(SwerveModule mod : swerveMods){
+    for(OldSwerveModule mod : swerveMods){
         states[mod.moduleNumber] = mod.getState();
     }
     return states;
@@ -189,13 +190,13 @@ public class SwerveSubsystem extends SubsystemBase {
   public void setModuleStates(SwerveModuleState[] desiredStates) {
     SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.SwerveConstants.kMaxTeleDriveSpeed);
     
-    for(SwerveModule mod : swerveMods){
+    for(OldSwerveModule mod : swerveMods){
         mod.setDesiredState(desiredStates[mod.moduleNumber], false);
     }
   }
 
   public void resetModulesToAbsolute(){
-    for(SwerveModule mod : swerveMods){
+    for(OldSwerveModule mod : swerveMods){
         mod.resetToAbsolute();
     }
   }
@@ -215,7 +216,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
     SmartDashboard.putData("Field", field);
 
-    for(SwerveModule mod : swerveMods){
+    for(OldSwerveModule mod : swerveMods){
       SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Cancoder", mod.getCanCoder().getDegrees());
       SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Integrated", mod.getPosition().angle.getDegrees());
       SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);

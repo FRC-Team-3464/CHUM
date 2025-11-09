@@ -14,10 +14,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Constants.SwerveConstants;
-import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.subsystems.swerve.OldSwerveSubsystem;
 
 public class SwerveCommand extends Command {
-  private SwerveSubsystem swerveSub;
+  private OldSwerveSubsystem swerveSub;
   private PIDController rotationController;
   private DoubleSupplier ySpeedSup;
   private DoubleSupplier xSpeedSup;
@@ -29,7 +29,7 @@ public class SwerveCommand extends Command {
   /** Creates a new SwerveCommand. */
   public SwerveCommand(DoubleSupplier ySpeedSup, DoubleSupplier xSpeedSup, DoubleSupplier rotationSup, BooleanSupplier robotCentricSup /*, DoubleSupplier dynamicHeadingSup */) {
     // Use addRequirements() here to declare subsystem dependencies.
-    swerveSub = SwerveSubsystem.getInstance();
+    swerveSub = OldSwerveSubsystem.getInstance();
     addRequirements(swerveSub);
 
     rotationController = new PIDController(Constants.AutoConstants.kPThetaController, 0, 0);

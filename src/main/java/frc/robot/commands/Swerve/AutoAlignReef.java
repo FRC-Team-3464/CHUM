@@ -30,8 +30,8 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Constants.SwerveConstants;
-import frc.robot.subsystems.SwerveSubsystem;
-import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.subsystems.swerve.OldSwerveSubsystem;
+import frc.robot.subsystems.vision.VisionSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class AutoAlignReef extends Command {
@@ -68,7 +68,7 @@ public class AutoAlignReef extends Command {
   private double yOffset;
 
   public final VisionSubsystem visionSub = VisionSubsystem.getInstance();
-  public final SwerveSubsystem swerveSub = SwerveSubsystem.getInstance();
+  public final OldSwerveSubsystem swerveSub = OldSwerveSubsystem.getInstance();
 
   public final Transform3d ROBOT_TO_CAMERA_3D = visionSub.getFrontRobotToCamera();
   public final Transform2d ROBOT_TO_CAMERA = new Transform2d(ROBOT_TO_CAMERA_3D.getX(), ROBOT_TO_CAMERA_3D.getY(), ROBOT_TO_CAMERA_3D.getRotation().toRotation2d());

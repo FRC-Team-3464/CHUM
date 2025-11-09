@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package frc.robot.subsystems.vision;
 
 import java.util.Optional;
 
@@ -22,6 +22,7 @@ import edu.wpi.first.units.Unit;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.swerve.OldSwerveSubsystem;
 
 public class VisionSubsystem extends SubsystemBase {
   /** Creates a new VisionSubsystem. */
@@ -75,7 +76,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   public Pose2d getRobotToTagTransform(boolean right, int Id) { 
     Pose2d tagPose = fieldLayout.getTagPose(Id).get().toPose2d();
-    Pose2d robotPose = SwerveSubsystem.getInstance().getPose();
+    Pose2d robotPose = OldSwerveSubsystem.getInstance().getPose();
     return robotPose.relativeTo(tagPose);
 
   }
@@ -91,7 +92,7 @@ public class VisionSubsystem extends SubsystemBase {
     }
     double timestampSeconds = visionEst.get().timestampSeconds;
 
-    SwerveSubsystem.getInstance().addVisionMeasurement(visionEst.get().estimatedPose.toPose2d(), timestampSeconds);
+    OldSwerveSubsystem.getInstance().addVisionMeasurement(visionEst.get().estimatedPose.toPose2d(), timestampSeconds);
   }
   
 
